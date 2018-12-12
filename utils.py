@@ -1,11 +1,12 @@
 import zipfile
 import os
 import hashlib
+import uuid
 
 def extractor(path_to_zip_file, directory_to_extract):
     # extract zip files
     with zipfile.ZipFile(path_to_zip_file, 'r') as zip_ref:
-        zip_ref.extractall(directory_to_extract_to)
+        zip_ref.extractall(directory_to_extract)
 
 
 
@@ -35,4 +36,14 @@ def md5sum(fname):
             hash_md5.update(chunk)
     
     return hash_md5.hexdigest()
+
+def path_exists(filepath):
+    pass
+    
+
+def temp_dir_generator(dir_path):
+    abspath = os.path.abspath(dir_path)
+    uid = uuid.uuid4()
+    new_temp_dir = os.path.join(abspath, str(uid))
+    return new_temp_dir
 
