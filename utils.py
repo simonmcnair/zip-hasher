@@ -36,3 +36,12 @@ def md5sum(fname):
     
     return hash_md5.hexdigest()
 
+
+def valid_file(file_path):
+    if os.path.exists(file_path):
+        return True
+    else:
+        return False
+
+def valid_zip_file(zip_file):
+    pass
