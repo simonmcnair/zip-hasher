@@ -37,6 +37,7 @@ def md5sum(fname):
     
     return hash_md5.hexdigest()
 
+
 def path_exists(filepath):
     pass
     
@@ -47,3 +48,13 @@ def temp_dir_generator(dir_path):
     new_temp_dir = os.path.join(abspath, str(uid))
     return new_temp_dir
 
+
+
+def valid_file(file_path):
+    if os.path.exists(file_path):
+        return True
+    else:
+        return False
+
+def valid_zip_file(zip_file):
+    pass
