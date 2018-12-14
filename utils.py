@@ -2,6 +2,8 @@ import zipfile
 import os
 import hashlib
 import uuid
+import platform
+import ConfigParser
 
 def extractor(path_to_zip_file, directory_to_extract):
     # extract zip files
@@ -81,6 +83,29 @@ def get_uuid():
     uid = uuid.uuid4()
     return str(uid.hex)
 
+
 def stripfilepath(full_file_path):
     return os.path.basename(full_file_path)
 
+
+def get_platform():
+    pform = platform.system()
+    print pform
+    return pform.lower()
+
+
+def get_tmp_path():
+    configParser = ConfigParser.RawConfigParser()
+    configFilePath = r'config.txt'
+    configParser.read(configFilePath)
+    if get_platform() == 'windows':
+        temp_dir = configParser.get('windows', 'tempdir')
+        # hack for windows paths
+        temp_dir = s = temp_dir.replace("\\", "\\\\") 
+    elif get_platform() == 'linux' or get_platform() == 'darwin':
+        temp_dir = configParser.get('unix', 'tempdir')
+    else:
+        print "not valid OS/Platform, contact developer : yodebu@gmail.com"
+        exit(-1)
+    
+    return temp_dir

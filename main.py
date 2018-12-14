@@ -3,14 +3,7 @@ import sys
 import utils
 from Class import FileDetails
 
-configParser = ConfigParser.RawConfigParser()   
-configFilePath = r'config.txt'
-configParser.read(configFilePath)
-print configParser
-TEMP_DIR = configParser.get('windows', 'tempdir')
-# hack for windows paths
-TEMP_DIR = s = TEMP_DIR.replace("\\", "\\\\") 
-
+TEMP_DIR = utils.get_tmp_path()
 
 def main():
     args = sys.argv
