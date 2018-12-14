@@ -125,11 +125,11 @@ def get_tmp_path():
 def get_xml_file():
     ConfigParser = readConfig()
     if get_platform() == 'windows':
-        xml_path = ConfigParser.get('windows', 'xml')
+        xml_path = ConfigParser.get('windows', 'xmlfile')
         # hack for windows paths
-        xml_path = xml_path.replace("\\", "\\\\") 
+        xml_path = xml_path.replace('\\', '\\\\')
     elif get_platform() == 'linux' or get_platform() == 'darwin':
-        xml_path = ConfigParser.get('unix', 'tempdir')
+        xml_path = ConfigParser.get('unix', 'xmlfile')
     else:
         print "not valid OS/Platform, contact developer : yodebu@gmail.com"
         exit(-1)

@@ -1,3 +1,29 @@
+import xml
+import xml.etree.ElementTree as ET
+import utils  
+tree = ET.parse(utils.get_xml_file())  
+root = tree.getroot()
+
+# one specific item attribute
+print('Item #2 attribute:')  
+print(root)
+
+
+# all item attributes
+print('\nAll attributes:')  
+for elem in root:
+    print elem
+    for subelem in elem:
+        print(subelem.attrib)
+
+
+# all items data
+print('\nAll item data:')  
+for elem in root:  
+    for subelem in elem:
+        print(subelem.text)
+
+
 class Py2XML():
 
     def __init__( self ):

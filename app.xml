@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Application ts="1493453326772" uri="http://fxldemo.tornado.no/" launch="no.tornado.FxlDemo">
+    <lib file="controlsfx.jar" checksum="901192049" size="985420"/>
+    <lib file="fxldemo-2.0.jar" checksum="1416987018" size="7051"/>
+    <updateText>Updating...</updateText>
+    <updateLabelStyle>-fx-font-weight: bold;</updateLabelStyle>
+    <progressBarStyle>-fx-pref-width: 200;</progressBarStyle>
+    <wrapperStyle>-fx-spacing: 10; -fx-padding: 25;</wrapperStyle>
+    <parameters>--myOption=myValue --myOtherOption=myOtherValue</parameters>
+    <cacheDir>USERLIB/FxlDemo</cacheDir>
+    <acceptDowngrade>false</acceptDowngrade>
+    <lingeringUpdateScreen>false</lingeringUpdateScreen>
+</Application>
