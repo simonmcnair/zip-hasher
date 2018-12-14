@@ -1,8 +1,15 @@
+import ConfigParser
 import sys
 import utils
 from Class import FileDetails
 
-TEMP_DIR = r'temp\\'
+configParser = ConfigParser.RawConfigParser()   
+configFilePath = r'config.txt'
+configParser.read(configFilePath)
+print configParser
+TEMP_DIR = configParser.get('windows', 'tempdir')
+# hack for windows paths
+TEMP_DIR = s = TEMP_DIR.replace("\\", "\\\\") 
 
 
 def main():

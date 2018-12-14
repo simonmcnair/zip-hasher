@@ -1,0 +1,5 @@
+[windows]
+tempdir = D:\test1\first
+
+[unix]
+tempdir = /tmp
