@@ -8,7 +8,11 @@ def extractor(path_to_zip_file, directory_to_extract):
     with zipfile.ZipFile(path_to_zip_file, 'r') as zip_ref:
         zip_ref.extractall(directory_to_extract)
 
-
+def random_temp_path(global_path):
+    uid = str(uuid.uuid4())
+    random_path = os.path.join(global_path, uid)
+    os.makedirs(random_path)
+    return random_path
 
 
 def getListOfFiles(dirName):
@@ -57,4 +61,26 @@ def valid_file(file_path):
         return False
 
 def valid_zip_file(zip_file):
-    pass
+        """Open the zip file a first time, to check that it is a valid zip archive."""
+        try:
+            zip = zipfile.ZipFile(zip_file)
+        except zipfile.BadZipfile as e:
+            print "bad zip file"
+            return False
+        bad_file = zip.testzip()
+        if bad_file:
+            zip.close()
+            print('"%s" in the .zip archive is corrupt.' % bad_file)
+            print "bad zip file"
+            return False
+        zip.close()  # Close file in all cases.
+        return True
+
+
+def get_uuid():
+    uid = uuid.uuid4()
+    return str(uid.hex)
+
+def stripfilepath(full_file_path):
+    return os.path.basename(full_file_path)
+

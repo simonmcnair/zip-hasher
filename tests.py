@@ -9,7 +9,7 @@ data = {
     } 
 }
 
-a = XMLSerialize.Py2XML()
-a.parse(data)
+# a = XMLSerialize.Py2XML()
+# a.parse(data)
 
-print a
+# print a
