@@ -23,16 +23,13 @@ def main():
         uid = utils.get_uuid()
         filename = utils.stripfilepath(path_to_file)
         md5hash = utils.md5sum(path_to_file)
-        data = FileDetails(file_uuid=uid, file_name=filename, file_full_path=path_to_file, file_md5hash=md5hash, )
+        filesize = utils.get_file_size(filepath=path_to_file)
+        data = FileDetails(file_uuid=uid, file_name=filename, file_full_path=path_to_file, file_md5hash=md5hash, file_size=filesize)
         data_for_all_files.append(data)
 
     print data_for_all_files
     for data in data_for_all_files:
         print data
-
-
-
-        
     
 
 

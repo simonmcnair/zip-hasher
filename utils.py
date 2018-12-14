@@ -46,6 +46,10 @@ def md5sum(fname):
 
 def path_exists(filepath):
     pass
+
+def get_file_size(filepath):
+    statinfo = os.stat(filepath)
+    return statinfo.st_size
     
 
 def temp_dir_generator(dir_path):

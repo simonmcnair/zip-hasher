@@ -1,15 +1,17 @@
 class FileDetails(object):
     
-    def __init__(self, file_uuid, file_name, file_full_path, file_md5hash):
+    def __init__(self, file_uuid, file_name, file_full_path, file_md5hash, file_size):
         self.fileuuid = file_uuid
         self.filename = file_name
         self.filefullpath = file_full_path
         self.md5hash = file_md5hash
+        self.filesize = file_size
     
     def getObjDetails(self):
         data = {}
-        data['filename'] = self.filename
-        data['hash'] = self.md5hash
+        data['file'] = self.filename
+        data['checksum'] = self.md5hash
+        data['size'] = self.filesize
 
         return data
     
