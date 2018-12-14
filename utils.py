@@ -3,6 +3,7 @@ import os
 import hashlib
 import uuid
 import platform
+import shutil
 import ConfigParser
 
 
@@ -134,3 +135,8 @@ def get_xml_file():
         print "not valid OS/Platform, contact developer : yodebu@gmail.com"
         exit(-1)
     return xml_path
+
+
+def cleanup(dir_path):
+    print shutil.rmtree(dir_path)
+    print "deleted temp dir"

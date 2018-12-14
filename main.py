@@ -31,6 +31,7 @@ def main():
     for data in data_for_all_files:
         print data
     
+    utils.cleanup(path_to_extract)
 
 
     
