@@ -5,6 +5,10 @@ import uuid
 import platform
 import ConfigParser
 
+
+CONFIG = r'config.txt'
+CONFIGPARSER = None
+
 def extractor(path_to_zip_file, directory_to_extract):
     # extract zip files
     with zipfile.ZipFile(path_to_zip_file, 'r') as zip_ref:
@@ -97,11 +101,14 @@ def get_platform():
     print pform
     return pform.lower()
 
+def readConfig():
+    configParser = ConfigParser.RawConfigParser()
+    configFilePath = CONFIG
+    configParser.read(configFilePath)
+    return configParser
 
 def get_tmp_path():
-    configParser = ConfigParser.RawConfigParser()
-    configFilePath = r'config.txt'
-    configParser.read(configFilePath)
+    configParser = readConfig()
     if get_platform() == 'windows':
         temp_dir = configParser.get('windows', 'tempdir')
         # hack for windows paths
@@ -113,3 +120,17 @@ def get_tmp_path():
         exit(-1)
     
     return temp_dir
+
+
+def get_xml_file():
+    ConfigParser = readConfig()
+    if get_platform() == 'windows':
+        xml_path = ConfigParser.get('windows', 'xml')
+        # hack for windows paths
+        xml_path = xml_path.replace("\\", "\\\\") 
+    elif get_platform() == 'linux' or get_platform() == 'darwin':
+        xml_path = ConfigParser.get('unix', 'tempdir')
+    else:
+        print "not valid OS/Platform, contact developer : yodebu@gmail.com"
+        exit(-1)
+    return xml_path

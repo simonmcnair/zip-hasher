@@ -1,5 +1,7 @@
 [windows]
 tempdir = D:\test1\first
+xmlfile = app.xml
 
 [unix]
 tempdir = /tmp
+xmlfile = app.xml
