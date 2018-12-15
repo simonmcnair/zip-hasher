@@ -1,3 +1,5 @@
+import collections
+
 class FileDetails(object):
     
     def __init__(self, file_uuid, file_name, file_full_path, file_md5hash, file_size):
@@ -8,10 +10,10 @@ class FileDetails(object):
         self.filesize = file_size
     
     def getObjDetails(self):
-        data = {}
-        data['file'] = self.filename
-        data['checksum'] = self.md5hash
-        data['size'] = self.filesize
+        data = collections.OrderedDict()
+        data['file'] = str(self.filename)
+        data['checksum'] = str(self.md5hash)
+        data['size'] = str(self.filesize)
 
         return data
     
@@ -20,3 +22,5 @@ class FileDetails(object):
         str function
         '''
         return  str(self.__class__) + '\n'+ '\n'.join(('{} = {}, {}'.format(item, self.__dict__[item], type(self.__dict__[item])) for item in self.__dict__))
+
+
