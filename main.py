@@ -1,9 +1,11 @@
-import ConfigParser
-import sys
-import utils
-from Class import FileDetails
+#!/usr/bin/env python2
+
 import argparse
+import utils
 import XMLSerializer as XS
+
+from Class import FileDetails
+
 
 TEMP_DIR = utils.get_tmp_path()
 
