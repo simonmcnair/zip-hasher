@@ -11,6 +11,7 @@ CONFIG = r'config.txt'
 CONFIGPARSER = None
 
 def extractor(path_to_zip_file, directory_to_extract):
+    print "extracting files ..."
     # extract zip files
     with zipfile.ZipFile(path_to_zip_file, 'r') as zip_ref:
         zip_ref.extractall(directory_to_extract)
@@ -19,6 +20,7 @@ def random_temp_path(global_path):
     uid = str(uuid.uuid4())
     random_path = os.path.join(global_path, uid)
     os.makedirs(random_path)
+    print "temp files created"
     return random_path
 
 
@@ -85,6 +87,7 @@ def valid_zip_file(zip_file):
             print "bad zip file"
             return False
         zip.close()  # Close file in all cases.
+        print "good zip file"
         return True
 
 
@@ -99,10 +102,10 @@ def stripfilepath(full_file_path):
 
 def get_platform():
     pform = platform.system()
-    print pform
     return pform.lower()
 
 def readConfig():
+    print "reading config.."
     configParser = ConfigParser.RawConfigParser()
     configFilePath = CONFIG
     configParser.read(configFilePath)
@@ -124,6 +127,7 @@ def get_tmp_path():
 
 
 def get_xml_file():
+    print "getting XML file path.."
     ConfigParser = readConfig()
     if get_platform() == 'windows':
         xml_path = ConfigParser.get('windows', 'xmlfile')
@@ -138,5 +142,5 @@ def get_xml_file():
 
 
 def cleanup(dir_path):
-    print shutil.rmtree(dir_path)
+    shutil.rmtree(dir_path)
     print "deleted temp dir"

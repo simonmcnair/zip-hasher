@@ -2,6 +2,7 @@ import ConfigParser
 import sys
 import utils
 from Class import FileDetails
+import XMLSerializer as XS
 
 TEMP_DIR = utils.get_tmp_path()
 
@@ -19,6 +20,7 @@ def main():
     path_to_extract = utils.random_temp_path(TEMP_DIR)
     utils.extractor(zip_path, path_to_extract)
     list_of_all_files = utils.getListOfFiles(path_to_extract)
+    
     for path_to_file in list_of_all_files:
         uid = utils.get_uuid()
         filename = utils.stripfilepath(path_to_file)
@@ -26,15 +28,11 @@ def main():
         filesize = utils.get_file_size(filepath=path_to_file)
         data = FileDetails(file_uuid=uid, file_name=filename, file_full_path=path_to_file, file_md5hash=md5hash, file_size=filesize)
         data_for_all_files.append(data)
-
-    print data_for_all_files
-    for data in data_for_all_files:
-        print data
     
+    XS.XMLSerialize(data_for_all_files)
     utils.cleanup(path_to_extract)
+    exit(0)
 
-
-    
 
 
 if __name__ == "__main__":
