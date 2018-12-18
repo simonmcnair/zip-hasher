@@ -41,7 +41,7 @@ def XMLSerialize(listOfData, xmlfile=None):
     lingeringUpdateScreen.text = "false"
     
     if xmlfile:
-        xmlfile_path = xmlfile
+        xmlfile_path = utils.get_xml_file(xmlfile)
     else:
         xmlfile_path = utils.get_xml_file()
     
