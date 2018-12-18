@@ -134,7 +134,7 @@ def get_xml_file(xml_file_path=None):
     if get_platform() == 'windows':
         if xml_file_path:
             xml_abspath = os.path.abspath(xml_file_path)
-            if not os.path.exists(os.path.realpath(xml_abspath)):
+            if not os.path.exists(os.path.dirname(os.path.realpath(xml_abspath))):
                 os.makedirs(os.path.dirname(os.path.realpath(xml_abspath)))
             xml_path = xml_file_path
         else:
@@ -144,7 +144,9 @@ def get_xml_file(xml_file_path=None):
     elif get_platform() == 'linux' or get_platform() == 'darwin':
         if xml_file_path:
             xml_abspath = os.path.abspath(xml_file_path)
-            if not os.path.exists(os.path.realpath(xml_abspath)):
+            print xml_abspath
+            if not os.path.exists(os.path.dirname(os.path.realpath(xml_abspath))):
+                print "yes?"
                 os.makedirs(os.path.dirname(os.path.realpath(xml_abspath)))
             xml_path = xml_file_path
         else:
