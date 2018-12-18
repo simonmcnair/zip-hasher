@@ -19,7 +19,8 @@ def extractor(path_to_zip_file, directory_to_extract):
 def random_temp_path(global_path):
     uid = str(uuid.uuid4())
     random_path = os.path.join(global_path, uid)
-    os.makedirs(random_path)
+    if not os.path.exists(random_path):
+        os.makedirs(random_path)
     print "temp files created"
     return random_path
 
@@ -133,7 +134,8 @@ def get_xml_file(xml_file_path=None):
     if get_platform() == 'windows':
         if xml_file_path:
             xml_abspath = os.path.abspath(xml_file_path)
-            os.makedirs(os.path.dirname(os.path.realpath(xml_abspath)))
+            if not os.path.exists(os.path.realpath(xml_abspath))):
+                os.makedirs(os.path.dirname(os.path.realpath(xml_abspath)))
             xml_path = xml_file_path
         else:
             xml_path = ConfigParser.get('windows', 'xmlfile')
@@ -142,7 +144,8 @@ def get_xml_file(xml_file_path=None):
     elif get_platform() == 'linux' or get_platform() == 'darwin':
         if xml_file_path:
             xml_abspath = os.path.abspath(xml_file_path)
-            os.makedirs(os.path.dirname(os.path.realpath(xml_abspath)))
+            if not os.path.exists(os.path.realpath(xml_abspath))):
+                os.makedirs(os.path.dirname(os.path.realpath(xml_abspath)))
             xml_path = xml_file_path
         else:
             xml_path = ConfigParser.get('unix', 'xmlfile')
