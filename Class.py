@@ -12,8 +12,7 @@ class FileDetails(object):
     
     def getObjDetails(self):
         data = collections.OrderedDict()
-        data['file'] = str(self.filename)
-        data['rel_path'] = str(self.relfilepath)
+        data['file'] = str(self.relfilepath)
         data['checksum'] = str(self.md5hash)
         data['size'] = str(self.filesize)
 
