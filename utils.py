@@ -25,6 +25,9 @@ def random_temp_path(global_path):
     return random_path
 
 
+def get_relative_path(path_to_file, temp_dir):
+    return os.path.relpath(path_to_file, temp_dir)
+
 def getListOfFiles(dirName):
     # create a list of file and sub directories 
     # names in the given directory 

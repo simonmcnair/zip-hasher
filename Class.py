@@ -2,9 +2,10 @@ import collections
 
 class FileDetails(object):
     
-    def __init__(self, file_uuid, file_name, file_full_path, file_md5hash, file_size):
+    def __init__(self, file_uuid, file_name, relative_path, file_full_path, file_md5hash, file_size):
         self.fileuuid = file_uuid
         self.filename = file_name
+        self.relfilepath = relative_path
         self.filefullpath = file_full_path
         self.md5hash = file_md5hash
         self.filesize = file_size
@@ -12,7 +13,7 @@ class FileDetails(object):
     def getObjDetails(self):
         data = collections.OrderedDict()
         data['file'] = str(self.filename)
-        data['fullpath'] = str(self.filefullpath)
+        data['rel_path'] = str(self.relfilepath)
         data['checksum'] = str(self.md5hash)
         data['size'] = str(self.filesize)
 

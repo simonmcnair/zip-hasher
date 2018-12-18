@@ -27,9 +27,10 @@ def main(args):
     for path_to_file in list_of_all_files:
         uid = utils.get_uuid()
         filename = utils.stripfilepath(path_to_file)
+        rel_path = utils.get_relative_path(path_to_file, path_to_extract)
         md5hash = utils.md5sum(path_to_file)
         filesize = utils.get_file_size(filepath=path_to_file)
-        data = FileDetails(file_uuid=uid, file_name=filename, file_full_path=path_to_file, file_md5hash=md5hash, file_size=filesize)
+        data = FileDetails(file_uuid=uid, file_name=filename, file_full_path=path_to_file, relative_path=rel_path, file_md5hash=md5hash, file_size=filesize)
         data_for_all_files.append(data)
     
     XS.XMLSerialize(data_for_all_files, xmlfilepath)
