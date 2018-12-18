@@ -14,7 +14,7 @@ def main(args):
     if zipfilepath is None:
         print "pass arguements correctly!"
         exit(-1)
-    
+    xmlfilepath = args.xmlfile
     zip_path = zipfilepath
     if utils.valid_file(zip_path) is not True:
         print "bad zip"
@@ -32,7 +32,7 @@ def main(args):
         data = FileDetails(file_uuid=uid, file_name=filename, file_full_path=path_to_file, file_md5hash=md5hash, file_size=filesize)
         data_for_all_files.append(data)
     
-    XS.XMLSerialize(data_for_all_files)
+    XS.XMLSerialize(data_for_all_files, xmlfilepath)
     utils.cleanup(path_to_extract)
     exit(0)
 
@@ -41,5 +41,6 @@ def main(args):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Process some zip files to an XML.')
     parser.add_argument('-z', '--zip', action="store", dest="zip", help="pass the path to zip file", required=True)
+    parser.add_argument('-x', '--xml', action="store", dest="xmlfile", help="correct path to XML file", required=True)
     args = parser.parse_args()
     main(args)

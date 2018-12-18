@@ -3,7 +3,7 @@ import collections
 from lxml import etree as ET
 
 
-def XMLSerialize(listOfData):
+def XMLSerialize(listOfData, xmlfile=None):
 
     rootDict = collections.OrderedDict(
         {
@@ -40,6 +40,11 @@ def XMLSerialize(listOfData):
     lingeringUpdateScreen = ET.SubElement(root, 'lingeringUpdateScreen')
     lingeringUpdateScreen.text = "false"
     
+    if xmlfile:
+        xmlfile_path = xmlfile
+    else:
+        xmlfile_path = utils.get_xml_file()
+    
     tree = ET.ElementTree(root)
-    tree.write(utils.get_xml_file(), pretty_print=True, xml_declaration=True, encoding="utf-8", standalone="yes")
+    tree.write(xmlfile_path, pretty_print=True, xml_declaration=True, encoding="utf-8", standalone="yes")
     print "writing to XML file.."
