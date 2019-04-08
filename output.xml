@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes'?>
+<Application>
+  <lib file="tests.py" checksum="3d6c80f345642be62caef16993ef8c2f" size="223"/>
+  <lib file="utils.py" checksum="b269099b6f5f4671881192317c558373" size="2137"/>
+  <lib file="utils.pyc" checksum="bd7b0c456c266e4604765c4de34abb26" size="2967"/>
+  <lib file="XMLSerialize.py" checksum="b7a847638517d3646786da8c8e7acb57" size="3066"/>
+  <lib file="XMLSerialize.pyc" checksum="2bb3a3ae837336e0e10bd9b5553d4cf1" size="2490"/>
+  <lib file="XMLSerializer.pyc" checksum="050e9bc409947636e2af05dce55abe0f" size="2496"/>
+</Application>

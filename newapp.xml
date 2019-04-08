@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes'?>
+<Application launch="no.tornado.FxlDemo" ts="1493453326772" uri="http://fxldemo.tornado.no/">
+  <lib file="app.xml" checksum="b0c5380e93ef8ae3262cc1b14c8475fe" size="755"/>
+  <lib file="Class.py" checksum="d2c5f319a2c1a7d4b4d5170aa3e1dd05" size="778"/>
+  <lib file="main.py" checksum="8cf90a827e5888e8dd174a28c73a2634" size="1370"/>
+  <lib file="MANIFEST.MF" checksum="48a001dea9718c17760d978efd37ab8d" size="66"/>
+  <lib file="README.md" checksum="5d4bad04d7630203fc9eb18eb4f0072e" size="433"/>
+  <lib file="tests.py" checksum="3d6c80f345642be62caef16993ef8c2f" size="223"/>
+  <updateText>Updating ...</updateText>
+  <updateLabelStyle>-fx-font-weight: bold;</updateLabelStyle>
+  <progressBarStyle>-fx-pref-width: 200;</progressBarStyle>
+  <wrapperStyle>-fx-spacing: 10; -fx-padding: 25;</wrapperStyle>
+  <parameters>--myOption=myValue --myOtherOption=myOtherValue</parameters>
+  <cacheDir>USERLIB/FxlDemo</cacheDir>
+  <acceptDowngrade>false</acceptDowngrade>
+  <lingeringUpdateScreen>false</lingeringUpdateScreen>
+</Application>
