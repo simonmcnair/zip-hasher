@@ -16,8 +16,8 @@ def main(args):
     dirtoprocess = args.dir
     csv_file_path = args.output
     if not os.path.isfile(csv_file_path):
-        with open(csv_file_path, mode='a', newline='',quoting=csv.QUOTE_ALL) as file:
-            writer = csv.writer(file)
+        with open(csv_file_path, mode='a', newline='') as file:
+            writer = csv.writer(file,quoting=csv.QUOTE_ALL)
             header = ["archive", 'path to file',"filename","hash"]
             writer.writerow(header)
 
@@ -38,8 +38,8 @@ def main(args):
                         print('created temporary directory', path_to_extract)
                         utils.extractor(full_file_path, path_to_extract)
                         list_of_all_files = utils.getListOfFiles(path_to_extract)
-                        with open(csv_file_path, mode='a', newline='',quoting=csv.QUOTE_ALL) as file:
-                            writer = csv.writer(file)
+                        with open(csv_file_path, mode='a', newline='') as file:
+                            writer = csv.writer(file,quoting=csv.QUOTE_ALL)
 
                             for path_to_file in list_of_all_files:
                                 filename = utils.stripfilepath(path_to_file)
@@ -53,8 +53,8 @@ def main(args):
 
                 elif extension == '.jpg' or extension == '.jpeg' or extension == '.gif':
                     hash = utils.calculate_blake2(full_file_path)
-                    with open(csv_file_path, mode='a', newline='',quoting=csv.QUOTE_ALL) as file:
-                        writer = csv.writer(file)
+                    with open(csv_file_path, mode='a', newline='') as file:
+                        writer = csv.writer(file,quoting=csv.QUOTE_ALL)
                         writer.writerow(['-',root,file_name,hash])
 
                 else:
