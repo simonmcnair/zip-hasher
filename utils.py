@@ -24,6 +24,7 @@ def extractor(path_to_zip_file, directory_to_extract):
         patoolib.extract_archive(path_to_zip_file, outdir=directory_to_extract)
     except Exception as e:
         logging.error(' FAILED to extract: ' + path_to_zip_file)
+        return
     #elif extension[1].lower() == '.cbz' or extension.lower() == '.zip':
     #    with zipfile.ZipFile(path_to_zip_file, 'r') as zip_ref:
     #        zip_ref.extractall(directory_to_extract)
