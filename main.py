@@ -23,17 +23,17 @@ def main(args):
         with open(csv_file_path, mode='a', newline='') as file:
             writer = csv.writer(file)
             #header = ["archive", "filename", "relpath","hash","filesize"]
-            header = ["archive", "filename","hash","filesize"]
+            header = ["archive", "filename","hash"]
             writer.writerow(header)
 
     if os.path.exists(dirtoprocess):
 
         for root, dirs, files in os.walk(dirtoprocess):
 
-            for archive_path in files:
+            for full_file_path in files:
 
-                extension = os.path.splitext(archive_path)[1].lower()
-                zip_path = (os.path.join(root, archive_path))
+                extension = os.path.splitext(full_file_path)[1].lower()
+                zip_path = (os.path.join(root, full_file_path))
 
                 if extension in supported_extensions:
                     if utils.valid_file(zip_path) is not True:
@@ -52,10 +52,15 @@ def main(args):
                                 #hash = utils.md5sum(path_to_file)
                                 hash = utils.calculate_blake2(path_to_file)
                                 #filesize = utils.get_file_size(filepath=path_to_file)
-                                #data = FileDetails(fullpath=zip_path, archive_path=filename, relative_path=rel_path, file_hash=hash, file_size=filesize)
-                                #writer.writerow([archive_path,filename,rel_path,hash,filesize])
-                                writer.writerow([archive_path,filename,hash])
+                                #data = FileDetails(fullpath=zip_path, full_file_path=filename, relative_path=rel_path, file_hash=hash, file_size=filesize)
+                                #writer.writerow([full_file_path,filename,rel_path,hash,filesize])
+                                writer.writerow([full_file_path,filename,hash])
 
+                elif extension == '.jpg' or extension == '.jpeg':
+                    hash = utils.calculate_blake2(full_file_path)
+                    with open(csv_file_path, mode='a', newline='') as file:
+                        writer = csv.writer(file)
+                        writer.writerow(['-',full_file_path,hash])
 
                 else:
                     print("Unsupported extension " + extension)
@@ -64,8 +69,8 @@ def main(args):
 
 
 parser = argparse.ArgumentParser(description='Process some zip files to an XML.')
-parser.add_argument('-d', '--dir', action="store", dest="dir", type=str, help="pass the path to zip files", required=False,default="Z:/Comics/WorkingFolder")
-parser.add_argument('-o', '--outputfile', action="store", dest="output", type=str, help="outputcsv", required=False,default="Z:/Comics/output.csv")
+parser.add_argument('-d', '--dir', action="store", dest="dir", type=str, help="pass the path to zip files", required=False,default="/srv/dev-disk-by-uuid-342ac512-ae09-47a7-842f-d3158537d395/mnt/Comics")
+parser.add_argument('-o', '--outputfile', action="store", dest="output", type=str, help="outputcsv", required=False,default="/srv/dev-disk-by-uuid-342ac512-ae09-47a7-842f-d3158537d395/mnt/Comics/output.csv")
 
 if __name__=='__main__':
     args = parser.parse_args()
