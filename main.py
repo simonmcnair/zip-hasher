@@ -13,16 +13,11 @@ createtempdir = tempfile.TemporaryDirectory()
 supported_extensions = ['.rar','.cbr','.zip','cbz']
 
 def main(args):
-    #zipfilepath = args.zip
-    #xmlfilepath = args.xmlfile
-    #zip_path = zipfilepath
-    data_for_all_files = []
     dirtoprocess = args.dir
     csv_file_path = args.output
     if not os.path.isfile(csv_file_path):
         with open(csv_file_path, mode='a', newline='') as file:
             writer = csv.writer(file)
-            #header = ["archive", "filename", "relpath","hash","filesize"]
             header = ["archive", "filename","hash"]
             writer.writerow(header)
 
@@ -30,18 +25,18 @@ def main(args):
 
         for root, dirs, files in os.walk(dirtoprocess):
 
-            for full_file_path in files:
+            for file_name in files:
 
-                extension = os.path.splitext(full_file_path)[1].lower()
-                zip_path = (os.path.join(root, full_file_path))
+                extension = os.path.splitext(file_name)[1].lower()
+                full_file_path = (os.path.join(root, file_name))
 
                 if extension in supported_extensions:
-                    if utils.valid_file(zip_path) is not True:
+                    if utils.valid_file(full_file_path) is not True:
                         print ("bad zip")
 
                     with tempfile.TemporaryDirectory() as path_to_extract:
                         print('created temporary directory', path_to_extract)
-                        utils.extractor(zip_path, path_to_extract)
+                        utils.extractor(full_file_path, path_to_extract)
                         list_of_all_files = utils.getListOfFiles(path_to_extract)
                         with open(csv_file_path, mode='a', newline='') as file:
                             writer = csv.writer(file)
@@ -52,11 +47,11 @@ def main(args):
                                 #hash = utils.md5sum(path_to_file)
                                 hash = utils.calculate_blake2(path_to_file)
                                 #filesize = utils.get_file_size(filepath=path_to_file)
-                                #data = FileDetails(fullpath=zip_path, full_file_path=filename, relative_path=rel_path, file_hash=hash, file_size=filesize)
+                                #data = FileDetails(fullpath=full_file_path, full_file_path=filename, relative_path=rel_path, file_hash=hash, file_size=filesize)
                                 #writer.writerow([full_file_path,filename,rel_path,hash,filesize])
                                 writer.writerow([full_file_path,filename,hash])
 
-                elif extension == '.jpg' or extension == '.jpeg':
+                elif extension == '.jpg' or extension == '.jpeg' or extension == '.gif':
                     hash = utils.calculate_blake2(full_file_path)
                     with open(csv_file_path, mode='a', newline='') as file:
                         writer = csv.writer(file)
