@@ -1,4 +1,3 @@
-import zipfile
 import os
 import hashlib
 import platform
@@ -15,11 +14,11 @@ def extractor(path_to_zip_file, directory_to_extract):
     print ("extracting files ...")
     # extract zip files
     extension = os.path.splitext(path_to_zip_file)
-    if extension[1].lower() == '.cbr' or extension.lower() == '.rar':
-        patoolib.extract_archive(path_to_zip_file, outdir=directory_to_extract)
-    elif extension[1].lower() == '.cbz' or extension.lower() == '.zip':
-        with zipfile.ZipFile(path_to_zip_file, 'r') as zip_ref:
-            zip_ref.extractall(directory_to_extract)
+    #if extension[1].lower() == '.cbr' or extension.lower() == '.rar':
+    patoolib.extract_archive(path_to_zip_file, outdir=directory_to_extract)
+    #elif extension[1].lower() == '.cbz' or extension.lower() == '.zip':
+    #    with zipfile.ZipFile(path_to_zip_file, 'r') as zip_ref:
+    #        zip_ref.extractall(directory_to_extract)
 
 def get_relative_path(path_to_file, temp_dir):
     return os.path.relpath(path_to_file, temp_dir)
