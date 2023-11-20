@@ -11,7 +11,7 @@ CONFIG = r'config.txt'
 CONFIGPARSER = None
 
 def extractor(path_to_zip_file, directory_to_extract):
-    print "extracting files ..."
+    print ("extracting files ...")
     # extract zip files
     with zipfile.ZipFile(path_to_zip_file, 'r') as zip_ref:
         zip_ref.extractall(directory_to_extract)
@@ -21,7 +21,7 @@ def random_temp_path(global_path):
     random_path = os.path.join(global_path, uid)
     if not os.path.exists(random_path):
         os.makedirs(random_path)
-    print "temp files created"
+    print ("temp files created")
     return random_path
 
 
@@ -82,16 +82,16 @@ def valid_zip_file(zip_file):
         try:
             zip = zipfile.ZipFile(zip_file)
         except zipfile.BadZipfile as e:
-            print "bad zip file"
+            print ("bad zip file")
             return False
         bad_file = zip.testzip()
         if bad_file:
             zip.close()
             print('"%s" in the .zip archive is corrupt.' % bad_file)
-            print "bad zip file"
+            print ("bad zip file")
             return False
         zip.close()  # Close file in all cases.
-        print "good zip file"
+        print ("good zip file")
         return True
 
 
@@ -109,7 +109,7 @@ def get_platform():
     return pform.lower()
 
 def readConfig():
-    print "reading config.."
+    print ("reading config..")
     configParser = ConfigParser.RawConfigParser()
     configFilePath = CONFIG
     configParser.read(configFilePath)
@@ -124,7 +124,7 @@ def get_tmp_path():
     elif get_platform() == 'linux' or get_platform() == 'darwin':
         temp_dir = configParser.get('unix', 'tempdir')
     else:
-        print "not valid OS/Platform, contact developer : yodebu@gmail.com"
+        print ("not valid OS/Platform, contact developer : yodebu@gmail.com")
         exit(-1)
     
     return temp_dir
@@ -132,7 +132,7 @@ def get_tmp_path():
 
 def get_xml_file(xml_file_path=None):
 
-    print "getting XML file path.."
+    print ("getting XML file path..")
     ConfigParser = readConfig()
     if get_platform() == 'windows':
         if xml_file_path:
@@ -149,17 +149,17 @@ def get_xml_file(xml_file_path=None):
             xml_abspath = os.path.abspath(xml_file_path)
             print xml_abspath
             if not os.path.exists(os.path.dirname(os.path.realpath(xml_abspath))):
-                print "yes?"
+                print ("yes?")
                 os.makedirs(os.path.dirname(os.path.realpath(xml_abspath)))
             xml_path = xml_file_path
         else:
             xml_path = ConfigParser.get('unix', 'xmlfile')
     else:
-        print "not valid OS/Platform, contact developer : yodebu@gmail.com"
+        print ("not valid OS/Platform, contact developer : yodebu@gmail.com")
         exit(-1)
     return xml_path
 
 
 def cleanup(dir_path):
     shutil.rmtree(dir_path)
-    print "deleted temp dir"
+    print ("deleted temp dir")

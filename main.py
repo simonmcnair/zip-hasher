@@ -10,14 +10,14 @@ from Class import FileDetails
 TEMP_DIR = utils.get_tmp_path()
 
 def main(args):
-    zipfilepath = args.zip
-    if zipfilepath is None:
-        print "pass arguements correctly!"
-        exit(-1)
-    xmlfilepath = args.xmlfile
-    zip_path = zipfilepath
+    #zipfilepath = args.zip
+    #xmlfilepath = args.xmlfile
+    #zip_path = zipfilepath
+    dirtoprocess = args.dir
+
+
     if utils.valid_file(zip_path) is not True:
-        print "bad zip"
+        print ("bad zip")
         exit(-1)
     data_for_all_files = []
     path_to_extract = utils.random_temp_path(TEMP_DIR)
@@ -39,9 +39,9 @@ def main(args):
 
 
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Process some zip files to an XML.')
-    parser.add_argument('-z', '--zip', action="store", dest="zip", help="pass the path to zip file", required=True)
-    parser.add_argument('-x', '--xml', action="store", dest="xmlfile", help="correct path to XML file", required=True)
+parser = argparse.ArgumentParser(description='Process some zip files to an XML.')
+parser.add_argument('-d', '--dir', action="directory", dest="dir", type=str, help="pass the path to zip files", required=True default="Z:/Comics/WorkingFolder")
+
+if __name__=='__main__':
     args = parser.parse_args()
     main(args)
