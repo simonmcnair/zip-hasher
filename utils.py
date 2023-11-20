@@ -5,11 +5,6 @@ import shutil
 import patoolib
 import logging
 
-#import ConfigParser
-
-
-#CONFIG = r'config.txt'
-#CONFIGPARSER = None
 def setup_logging(log_file):
     # Configure logging
     logging.basicConfig(filename=log_file, level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -60,15 +55,6 @@ def calculate_blake2(file_path, block_size=65536):
     # Return the hexadecimal digest of the hash
     return hasher.hexdigest()
 
-def md5sum(fname):
-    hash_md5 = hashlib.md5()
-    with open(fname, "rb") as f:
-        for chunk in iter(lambda: f.read(4096), b""):
-            hash_md5.update(chunk)
-    
-    return hash_md5.hexdigest()
-
-
 def path_exists(filepath):
     pass
 
@@ -82,24 +68,6 @@ def valid_file(file_path):
     else:
         return False
 
-def valid_zip_file(zip_file):
-        #"""Open the zip file a first time, to check that it is a valid zip archive."""
-        try:
-            zip = zipfile.ZipFile(zip_file)
-        except zipfile.BadZipfile as e:
-            print ("bad zip file")
-            return False
-        bad_file = zip.testzip()
-        if bad_file:
-            zip.close()
-            print('"%s" in the .zip archive is corrupt.' % bad_file)
-            print ("bad zip file")
-            return False
-        zip.close()  # Close file in all cases.
-        print ("good zip file")
-        return True
-
-
 def stripfilepath(full_file_path):
     return os.path.basename(full_file_path)
 
@@ -108,17 +76,4 @@ def get_platform():
     pform = platform.system()
     return pform.lower()
 
-#def readConfig():
-#    print ("reading config..")
-#    configParser = ConfigParser.RawConfigParser()
-#    configFilePath = CONFIG
-#    configParser.read(configFilePath)
-#    return configParser
 
-
-
-
-
-def cleanup(dir_path):
-    shutil.rmtree(dir_path)
-    print ("deleted temp dir")

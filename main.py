@@ -3,7 +3,6 @@
 import argparse
 import utils
 import os
-from Class import FileDetails
 import tempfile
 import csv
 
@@ -47,11 +46,7 @@ def main(args):
                             for path_to_file in list_of_all_files:
                                 filename = utils.stripfilepath(path_to_file)
                                 #rel_path = utils.get_relative_path(path_to_file, path_to_extract)
-                                #hash = utils.md5sum(path_to_file)
                                 hash = utils.calculate_blake2(path_to_file)
-                                #filesize = utils.get_file_size(filepath=path_to_file)
-                                #data = FileDetails(fullpath=full_file_path, full_file_path=filename, relative_path=rel_path, file_hash=hash, file_size=filesize)
-                                #writer.writerow([full_file_path,filename,rel_path,hash,filesize])
                                 writer.writerow([full_file_path,'-',filename,hash])
 
                 elif extension == '.jpg' or extension == '.jpeg' or extension == '.gif' or extension == '.png':
