@@ -54,7 +54,7 @@ def main(args):
                                 #writer.writerow([full_file_path,filename,rel_path,hash,filesize])
                                 writer.writerow([full_file_path,'-',filename,hash])
 
-                elif extension == '.jpg' or extension == '.jpeg' or extension == '.gif':
+                elif extension == '.jpg' or extension == '.jpeg' or extension == '.gif' or extension == '.png':
                     hash = utils.calculate_blake2(full_file_path)
                     with open(csv_file_path, mode='a', newline='') as file:
                         writer = csv.writer(file,quoting=csv.QUOTE_ALL)
