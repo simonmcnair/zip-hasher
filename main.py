@@ -7,6 +7,7 @@ from Class import FileDetails
 import tempfile
 import csv
 
+
 pritest = tempfile.gettempdir() # prints the current temporary directory
 createtempdir = tempfile.TemporaryDirectory()
 #f = tempfile.TemporaryFile()
@@ -15,6 +16,8 @@ supported_extensions = ['.rar','.cbr','.zip','.cbz']
 def main(args):
     dirtoprocess = args.dir
     csv_file_path = args.output
+    utils.setup_logging(args.logfile)
+
     if not os.path.isfile(csv_file_path):
         with open(csv_file_path, mode='a', newline='') as file:
             writer = csv.writer(file,quoting=csv.QUOTE_ALL)
@@ -66,6 +69,7 @@ def main(args):
 parser = argparse.ArgumentParser(description='Process some zip files to an XML.')
 parser.add_argument('-d', '--dir', action="store", dest="dir", type=str, help="pass the path to zip files", required=False,default="/srv/dev-disk-by-uuid-342ac512-ae09-47a7-842f-d3158537d395/mnt/Comics")
 parser.add_argument('-o', '--outputfile', action="store", dest="output", type=str, help="outputcsv", required=False,default="/srv/dev-disk-by-uuid-342ac512-ae09-47a7-842f-d3158537d395/mnt/Comics/output.csv")
+parser.add_argument('-l', '--logfile', action="store", dest="logfile", type=str, help="log file", required=False,default="/srv/dev-disk-by-uuid-342ac512-ae09-47a7-842f-d3158537d395/mnt/Comics/logfile.txt")
 
 if __name__=='__main__':
     args = parser.parse_args()

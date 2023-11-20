@@ -3,19 +3,27 @@ import hashlib
 import platform
 import shutil
 import patoolib
+import logging
 
 #import ConfigParser
 
 
 #CONFIG = r'config.txt'
 #CONFIGPARSER = None
+def setup_logging(log_file):
+    # Configure logging
+    logging.basicConfig(filename=log_file, level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
 
 def extractor(path_to_zip_file, directory_to_extract):
     print ("extracting files ...")
     # extract zip files
     extension = os.path.splitext(path_to_zip_file)
     #if extension[1].lower() == '.cbr' or extension.lower() == '.rar':
-    patoolib.extract_archive(path_to_zip_file, outdir=directory_to_extract)
+    try:
+        patoolib.extract_archive(path_to_zip_file, outdir=directory_to_extract)
+    except Exception as e:
+        logging.error(' FAILED to extract: ' + path_to_zip_file)
     #elif extension[1].lower() == '.cbz' or extension.lower() == '.zip':
     #    with zipfile.ZipFile(path_to_zip_file, 'r') as zip_ref:
     #        zip_ref.extractall(directory_to_extract)
