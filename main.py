@@ -18,7 +18,7 @@ def main(args):
     if not os.path.isfile(csv_file_path):
         with open(csv_file_path, mode='a', newline='') as file:
             writer = csv.writer(file)
-            header = ["archive", "filename","hash"]
+            header = ["archive", 'path to file',"filename","hash"]
             writer.writerow(header)
 
     if os.path.exists(dirtoprocess):
@@ -49,13 +49,13 @@ def main(args):
                                 #filesize = utils.get_file_size(filepath=path_to_file)
                                 #data = FileDetails(fullpath=full_file_path, full_file_path=filename, relative_path=rel_path, file_hash=hash, file_size=filesize)
                                 #writer.writerow([full_file_path,filename,rel_path,hash,filesize])
-                                writer.writerow([full_file_path,filename,hash])
+                                writer.writerow([full_file_path,'-',filename,hash])
 
                 elif extension == '.jpg' or extension == '.jpeg' or extension == '.gif':
                     hash = utils.calculate_blake2(full_file_path)
                     with open(csv_file_path, mode='a', newline='') as file:
                         writer = csv.writer(file)
-                        writer.writerow(['-',full_file_path,hash])
+                        writer.writerow(['-',root,file_name,hash])
 
                 else:
                     print("Unsupported extension " + extension)
