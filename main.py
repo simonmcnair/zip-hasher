@@ -62,7 +62,7 @@ def main(args):
 
                 else:
                     print("Unsupported extension :" + extension + ". " + full_file_path)
-                    logging.info(' skipped as unsuppoerted extension ' + full_file_path)
+                    utils.logging.info(' skipped as unsuppoerted extension ' + full_file_path)
 
 
 
