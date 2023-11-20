@@ -2,45 +2,70 @@
 
 import argparse
 import utils
-import XMLSerializer as XS
-
+import os
 from Class import FileDetails
+import tempfile
+import csv
 
-
-TEMP_DIR = utils.get_tmp_path()
+pritest = tempfile.gettempdir() # prints the current temporary directory
+createtempdir = tempfile.TemporaryDirectory()
+#f = tempfile.TemporaryFile()
+supported_extensions = ['.rar','.cbr','.zip','cbz']
 
 def main(args):
     #zipfilepath = args.zip
     #xmlfilepath = args.xmlfile
     #zip_path = zipfilepath
-    dirtoprocess = args.dir
-
-
-    if utils.valid_file(zip_path) is not True:
-        print ("bad zip")
-        exit(-1)
     data_for_all_files = []
-    path_to_extract = utils.random_temp_path(TEMP_DIR)
-    utils.extractor(zip_path, path_to_extract)
-    list_of_all_files = utils.getListOfFiles(path_to_extract)
-    
-    for path_to_file in list_of_all_files:
-        uid = utils.get_uuid()
-        filename = utils.stripfilepath(path_to_file)
-        rel_path = utils.get_relative_path(path_to_file, path_to_extract)
-        md5hash = utils.md5sum(path_to_file)
-        filesize = utils.get_file_size(filepath=path_to_file)
-        data = FileDetails(file_uuid=uid, file_name=filename, file_full_path=path_to_file, relative_path=rel_path, file_md5hash=md5hash, file_size=filesize)
-        data_for_all_files.append(data)
-    
-    XS.XMLSerialize(data_for_all_files, xmlfilepath)
-    utils.cleanup(path_to_extract)
-    exit(0)
+    dirtoprocess = args.dir
+    csv_file_path = args.output
+    if not os.path.isfile(csv_file_path):
+        with open(csv_file_path, mode='a', newline='') as file:
+            writer = csv.writer(file)
+            #header = ["archive", "filename", "relpath","hash","filesize"]
+            header = ["archive", "filename","hash","filesize"]
+            writer.writerow(header)
+
+    if os.path.exists(dirtoprocess):
+
+        for root, dirs, files in os.walk(dirtoprocess):
+
+            for archive_path in files:
+
+                extension = os.path.splitext(archive_path)[1].lower()
+                zip_path = (os.path.join(root, archive_path))
+
+                if extension in supported_extensions:
+                    if utils.valid_file(zip_path) is not True:
+                        print ("bad zip")
+
+                    with tempfile.TemporaryDirectory() as path_to_extract:
+                        print('created temporary directory', path_to_extract)
+                        utils.extractor(zip_path, path_to_extract)
+                        list_of_all_files = utils.getListOfFiles(path_to_extract)
+                        with open(csv_file_path, mode='a', newline='') as file:
+                            writer = csv.writer(file)
+
+                            for path_to_file in list_of_all_files:
+                                filename = utils.stripfilepath(path_to_file)
+                                #rel_path = utils.get_relative_path(path_to_file, path_to_extract)
+                                #hash = utils.md5sum(path_to_file)
+                                hash = utils.calculate_blake2(path_to_file)
+                                #filesize = utils.get_file_size(filepath=path_to_file)
+                                #data = FileDetails(fullpath=zip_path, archive_path=filename, relative_path=rel_path, file_hash=hash, file_size=filesize)
+                                #writer.writerow([archive_path,filename,rel_path,hash,filesize])
+                                writer.writerow([archive_path,filename,hash])
+
+
+                else:
+                    print("Unsupported extension " + extension)
+
 
 
 
 parser = argparse.ArgumentParser(description='Process some zip files to an XML.')
-parser.add_argument('-d', '--dir', action="directory", dest="dir", type=str, help="pass the path to zip files", required=True default="Z:/Comics/WorkingFolder")
+parser.add_argument('-d', '--dir', action="store", dest="dir", type=str, help="pass the path to zip files", required=False,default="Z:/Comics/WorkingFolder")
+parser.add_argument('-o', '--outputfile', action="store", dest="output", type=str, help="outputcsv", required=False,default="Z:/Comics/output.csv")
 
 if __name__=='__main__':
     args = parser.parse_args()

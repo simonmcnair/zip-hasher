@@ -2,12 +2,11 @@ import collections
 
 class FileDetails(object):
     
-    def __init__(self, file_uuid, file_name, relative_path, file_full_path, file_md5hash, file_size):
-        self.fileuuid = file_uuid
+    def __init__(self, fullpath, file_name, relative_path, file_hash, file_size):
+        self.fullpath = fullpath
         self.filename = file_name
         self.relfilepath = relative_path
-        self.filefullpath = file_full_path
-        self.md5hash = file_md5hash
+        self.md5hash = file_hash
         self.filesize = file_size
     
     def getObjDetails(self):

@@ -1,29 +1,25 @@
 import zipfile
 import os
 import hashlib
-import uuid
 import platform
 import shutil
-import ConfigParser
+import patoolib
+
+#import ConfigParser
 
 
-CONFIG = r'config.txt'
-CONFIGPARSER = None
+#CONFIG = r'config.txt'
+#CONFIGPARSER = None
 
 def extractor(path_to_zip_file, directory_to_extract):
     print ("extracting files ...")
     # extract zip files
-    with zipfile.ZipFile(path_to_zip_file, 'r') as zip_ref:
-        zip_ref.extractall(directory_to_extract)
-
-def random_temp_path(global_path):
-    uid = str(uuid.uuid4())
-    random_path = os.path.join(global_path, uid)
-    if not os.path.exists(random_path):
-        os.makedirs(random_path)
-    print ("temp files created")
-    return random_path
-
+    extension = os.path.splitext(path_to_zip_file)
+    if extension[1].lower() == '.cbr' or extension.lower() == '.rar':
+        patoolib.extract_archive(path_to_zip_file, outdir=directory_to_extract)
+    elif extension[1].lower() == '.cbz' or extension.lower() == '.zip':
+        with zipfile.ZipFile(path_to_zip_file, 'r') as zip_ref:
+            zip_ref.extractall(directory_to_extract)
 
 def get_relative_path(path_to_file, temp_dir):
     return os.path.relpath(path_to_file, temp_dir)
@@ -45,6 +41,16 @@ def getListOfFiles(dirName):
     
     return allFiles
 
+def calculate_blake2(file_path, block_size=65536):
+    hasher = hashlib.blake2b()
+
+    with open(file_path, 'rb') as file:
+        # Read the file in blocks and update the hash
+        for block in iter(lambda: file.read(block_size), b''):
+            hasher.update(block)
+
+    # Return the hexadecimal digest of the hash
+    return hasher.hexdigest()
 
 def md5sum(fname):
     hash_md5 = hashlib.md5()
@@ -62,15 +68,6 @@ def get_file_size(filepath):
     statinfo = os.stat(filepath)
     return statinfo.st_size
     
-
-def temp_dir_generator(dir_path):
-    abspath = os.path.abspath(dir_path)
-    uid = uuid.uuid4()
-    new_temp_dir = os.path.join(abspath, str(uid))
-    return new_temp_dir
-
-
-
 def valid_file(file_path):
     if os.path.exists(file_path):
         return True
@@ -78,7 +75,7 @@ def valid_file(file_path):
         return False
 
 def valid_zip_file(zip_file):
-        """Open the zip file a first time, to check that it is a valid zip archive."""
+        #"""Open the zip file a first time, to check that it is a valid zip archive."""
         try:
             zip = zipfile.ZipFile(zip_file)
         except zipfile.BadZipfile as e:
@@ -95,11 +92,6 @@ def valid_zip_file(zip_file):
         return True
 
 
-def get_uuid():
-    uid = uuid.uuid4()
-    return str(uid.hex)
-
-
 def stripfilepath(full_file_path):
     return os.path.basename(full_file_path)
 
@@ -108,56 +100,15 @@ def get_platform():
     pform = platform.system()
     return pform.lower()
 
-def readConfig():
-    print ("reading config..")
-    configParser = ConfigParser.RawConfigParser()
-    configFilePath = CONFIG
-    configParser.read(configFilePath)
-    return configParser
-
-def get_tmp_path():
-    configParser = readConfig()
-    if get_platform() == 'windows':
-        temp_dir = configParser.get('windows', 'tempdir')
-        # hack for windows paths
-        temp_dir = s = temp_dir.replace("\\", "\\\\") 
-    elif get_platform() == 'linux' or get_platform() == 'darwin':
-        temp_dir = configParser.get('unix', 'tempdir')
-    else:
-        print ("not valid OS/Platform, contact developer : yodebu@gmail.com")
-        exit(-1)
-    
-    return temp_dir
+#def readConfig():
+#    print ("reading config..")
+#    configParser = ConfigParser.RawConfigParser()
+#    configFilePath = CONFIG
+#    configParser.read(configFilePath)
+#    return configParser
 
 
-def get_xml_file(xml_file_path=None):
 
-    print ("getting XML file path..")
-    ConfigParser = readConfig()
-    if get_platform() == 'windows':
-        if xml_file_path:
-            xml_abspath = os.path.abspath(xml_file_path)
-            if not os.path.exists(os.path.dirname(os.path.realpath(xml_abspath))):
-                os.makedirs(os.path.dirname(os.path.realpath(xml_abspath)))
-            xml_path = xml_file_path
-        else:
-            xml_path = ConfigParser.get('windows', 'xmlfile')
-        # hack for windows paths
-        xml_path = xml_path.replace('\\', '\\\\')
-    elif get_platform() == 'linux' or get_platform() == 'darwin':
-        if xml_file_path:
-            xml_abspath = os.path.abspath(xml_file_path)
-            print xml_abspath
-            if not os.path.exists(os.path.dirname(os.path.realpath(xml_abspath))):
-                print ("yes?")
-                os.makedirs(os.path.dirname(os.path.realpath(xml_abspath)))
-            xml_path = xml_file_path
-        else:
-            xml_path = ConfigParser.get('unix', 'xmlfile')
-    else:
-        print ("not valid OS/Platform, contact developer : yodebu@gmail.com")
-        exit(-1)
-    return xml_path
 
 
 def cleanup(dir_path):
