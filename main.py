@@ -58,7 +58,7 @@ def main(args):
                         writer.writerow(['-',root,file_name,hash])
 
                 else:
-                    print("Unsupported extension " + extension + "({full_file_path})")
+                    print("Unsupported extension :" + extension + ". " + full_file_path)
 
 
 
