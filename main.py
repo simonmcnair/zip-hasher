@@ -10,7 +10,7 @@ import csv
 pritest = tempfile.gettempdir() # prints the current temporary directory
 createtempdir = tempfile.TemporaryDirectory()
 #f = tempfile.TemporaryFile()
-supported_extensions = ['.rar','.cbr','.zip','cbz']
+supported_extensions = ['.rar','.cbr','.zip','.cbz']
 
 def main(args):
     dirtoprocess = args.dir
