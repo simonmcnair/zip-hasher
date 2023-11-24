@@ -55,7 +55,8 @@ def main(args):
                             writer = csv.writer(file,quoting=csv.QUOTE_ALL)
                             for path_to_file in list_of_all_files:
                                 print("processing " + path_to_file)
-                                if extension in supported_image_extensions:
+                                file_extension = os.path.splitext(path_to_file)[1].lower()
+                                if file_extension in supported_image_extensions:
                                     ret = utils.test_image(path_to_file)
                                     if ret == False:
                                         print("oops corrupt image")                                    
