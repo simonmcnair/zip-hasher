@@ -13,6 +13,10 @@ def setup_logging(log_file):
 def prepend_text_to_filename(filepath, text_to_prepend):
     directory, filename = os.path.split(filepath)
     base_name, extension = os.path.splitext(filename)
+    if base_name.startswith(text_to_prepend):
+        logging.info(filepath + " already begins with " + text_to_prepend)
+        return filepath
+     
     new_base_name = f"{text_to_prepend}_{base_name}"
     new_filepath = os.path.join(directory, new_base_name + extension)
     try:
@@ -36,9 +40,6 @@ def test_image(infile):
 def extractor(path_to_zip_file, directory_to_extract):
     print ("extracting files ...")
 
-    # extract zip files
-    extension = os.path.splitext(path_to_zip_file)
-    #if extension[1].lower() == '.cbr' or extension.lower() == '.rar':
     try:
         patoolib.extract_archive(path_to_zip_file, outdir=directory_to_extract)
     except Exception as e:
@@ -46,9 +47,6 @@ def extractor(path_to_zip_file, directory_to_extract):
         logging.error(' FAILED to extract: ' + path_to_zip_file + ".  Error " + str(e))
         prepend_text_to_filename(path_to_zip_file, 'bad_archive_')
         return
-    #elif extension[1].lower() == '.cbz' or extension.lower() == '.zip':
-    #    with zipfile.ZipFile(path_to_zip_file, 'r') as zip_ref:
-    #        zip_ref.extractall(directory_to_extract)
 
 def get_relative_path(path_to_file, temp_dir):
     return os.path.relpath(path_to_file, temp_dir)

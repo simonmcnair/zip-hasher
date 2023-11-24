@@ -36,14 +36,12 @@ def main(args):
                 full_file_path = (os.path.join(root, file_name))
 
                 if extension in supported_extensions:
-
                     with tempfile.TemporaryDirectory() as path_to_extract:
                         print('created temporary directory', path_to_extract)
                         utils.extractor(full_file_path, path_to_extract)
                         list_of_all_files = utils.getListOfFiles(path_to_extract)
                         with open(csv_file_path, mode='a', newline='') as file:
                             writer = csv.writer(file,quoting=csv.QUOTE_ALL)
-
                             for path_to_file in list_of_all_files:
                                 if extension in supported_image_extensions:
                                     ret = utils.test_image(path_to_file)
@@ -54,21 +52,28 @@ def main(args):
                                         print("valid image")
                                 else:
                                     print("Not an image file.")
-
                                 filename = utils.stripfilepath(path_to_file)
                                 #rel_path = utils.get_relative_path(path_to_file, path_to_extract)
                                 hash = utils.calculate_blake2(path_to_file)
                                 writer.writerow([full_file_path,'-',filename,hash])
 
-                elif extension == '.jpg' or extension == '.jpeg' or extension == '.gif' or extension == '.png':
+                elif extension in supported_image_extensions:
+                    ret = utils.test_image(path_to_file)
+                    if ret == False:
+                        print("oops corrupt image")                                    
+                        utils.logging.error(' corrupt image ' + path_to_file)
+                    elif ret == True:
+                        print("valid image")
+                        hash = utils.calculate_blake2(full_file_path)
+                        with open(csv_file_path, mode='a', newline='') as file:
+                            writer = csv.writer(file,quoting=csv.QUOTE_ALL)
+                            writer.writerow(['-',root,file_name,hash])
+
+                else:
                     hash = utils.calculate_blake2(full_file_path)
                     with open(csv_file_path, mode='a', newline='') as file:
                         writer = csv.writer(file,quoting=csv.QUOTE_ALL)
                         writer.writerow(['-',root,file_name,hash])
-
-                else:
-                    print("Unsupported extension :" + extension + ". " + full_file_path)
-                    utils.logging.info(' skipped as unsuppoerted extension ' + full_file_path)
 
 
 
