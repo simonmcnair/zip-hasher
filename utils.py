@@ -31,7 +31,7 @@ def test_image(infile):
     try:
         with Image.open(infile, mode='r', formats=None) as im:
             try:
-                Image.load()
+                im.load()
             except Exception as e:
                 logging.error(' FAILED to load: ' + infile + " as an image.  Error " + str(e))
                 return False
