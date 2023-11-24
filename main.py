@@ -32,8 +32,13 @@ def main(args):
 
             for file_name in files:
 
+                
                 extension = os.path.splitext(file_name)[1].lower()
                 full_file_path = (os.path.join(root, file_name))
+
+                if full_file_path == args.output or full_file_path == args.logfile:
+                    print("not processing csv or log file")
+                    continue
 
                 if extension in supported_extensions:
                     with tempfile.TemporaryDirectory() as path_to_extract:
@@ -43,6 +48,7 @@ def main(args):
                         with open(csv_file_path, mode='a', newline='') as file:
                             writer = csv.writer(file,quoting=csv.QUOTE_ALL)
                             for path_to_file in list_of_all_files:
+                                print("processing " + path_to_file)
                                 if extension in supported_image_extensions:
                                     ret = utils.test_image(path_to_file)
                                     if ret == False:
