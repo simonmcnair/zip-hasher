@@ -3,22 +3,48 @@ import hashlib
 import platform
 import shutil
 import patoolib
+from PIL import Image
 import logging
 
 def setup_logging(log_file):
     # Configure logging
     logging.basicConfig(filename=log_file, level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
+def prepend_text_to_filename(filepath, text_to_prepend):
+    directory, filename = os.path.split(filepath)
+    base_name, extension = os.path.splitext(filename)
+    new_base_name = f"{text_to_prepend}_{base_name}"
+    new_filepath = os.path.join(directory, new_base_name + extension)
+    try:
+        shutil.move(filepath,new_filepath)
+    except Exception as e:
+        logging.error(' FAILED to move: ' + filepath + " to " + new_filepath + ".  Error " + str(e))
+        return
 
+    return new_filepath
+
+def test_image(infile):
+    with Image.open(infile) as im:
+        try:
+            Image.open(im, mode='r', formats=None)
+            Image.load()
+        except Exception as e:
+            logging.error(' FAILED to open: ' + infile + " as an image.  Error " + str(e))
+            return False
+        return True
+        
 def extractor(path_to_zip_file, directory_to_extract):
     print ("extracting files ...")
+
     # extract zip files
     extension = os.path.splitext(path_to_zip_file)
     #if extension[1].lower() == '.cbr' or extension.lower() == '.rar':
     try:
         patoolib.extract_archive(path_to_zip_file, outdir=directory_to_extract)
     except Exception as e:
-        logging.error(' FAILED to extract: ' + path_to_zip_file)
+        print("Failed to test archive")
+        logging.error(' FAILED to extract: ' + path_to_zip_file + ".  Error " + str(e))
+        prepend_text_to_filename(path_to_zip_file, 'bad_archive_')
         return
     #elif extension[1].lower() == '.cbz' or extension.lower() == '.zip':
     #    with zipfile.ZipFile(path_to_zip_file, 'r') as zip_ref:

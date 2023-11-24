@@ -10,6 +10,7 @@ def find_and_sort_duplicates(input_file, output_file):
         reader = csv.reader(csvfile)
         header = next(reader)  # Skip the header
         for row in reader:
+            print("Number of columns is " + " " + str(len(row))) 
             fourth_column_values[row[3]].append(row)
 
     # Write rows with duplicate fourth column values to a new CSV file, sorted by hash
@@ -19,7 +20,7 @@ def find_and_sort_duplicates(input_file, output_file):
         for _, rows in sorted(fourth_column_values.items()):
             if len(rows) > 1:
                 # Sort rows by hash (assuming hash is in the 5th column, adjust if needed)
-                sorted_rows = sorted(rows, key=lambda x: x[4])
+                sorted_rows = sorted(rows, key=lambda x: x[3])
                 writer.writerows(sorted_rows)
 
 def find_duplicate_rows(input_file, output_file):
@@ -42,8 +43,10 @@ def find_duplicate_rows(input_file, output_file):
                 writer.writerows(rows)
 
 if __name__ == "__main__":
-    input_csv = '/srv/dev-disk-by-uuid-342ac512-ae09-47a7-842f-d3158537d395/mnt/Comics/output.csv'
-    output_csv = '/srv/dev-disk-by-uuid-342ac512-ae09-47a7-842f-d3158537d395/mnt/Comics/duplicate_rows.csv'
+#    input_csv = '/srv/dev-disk-by-uuid-342ac512-ae09-47a7-842f-d3158537d395/mnt/Comics/output.csv'
+#    output_csv = '/srv/dev-disk-by-uuid-342ac512-ae09-47a7-842f-d3158537d395/mnt/Comics/duplicate_rows.csv'
+    input_csv = 'Z:/Comics/output.csv'
+    output_csv = 'Z:/Comics/duplicate_rows.csv'
 
     #find_duplicate_rows(input_csv, output_csv)
     find_and_sort_duplicates(input_csv, output_csv)
