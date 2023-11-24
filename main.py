@@ -15,10 +15,16 @@ createtempdir = tempfile.TemporaryDirectory()
 #f = tempfile.TemporaryFile()
 supported_extensions = ['.rar','.cbr','.zip','.cbz','.7z','.7zip']
 
+
+
 def main(args):
     dirtoprocess = args.dir
     csv_file_path = args.output
     utils.setup_logging(args.logfile)
+
+    utils.logging.error('supported extensions  ' + str(supported_extensions))
+    utils.logging.error('supported image extensions  ' + str(supported_image_extensions))
+
 
     if not os.path.isfile(csv_file_path):
         with open(csv_file_path, mode='a', newline='') as file:
@@ -57,7 +63,9 @@ def main(args):
                                     elif ret == True:
                                         print("valid image")
                                 else:
-                                    print("Not an image file.")
+                                    print("Not an image file. " + extension)
+                                    utils.logging.info("Not an image file. " + extension)
+
                                 filename = utils.stripfilepath(path_to_file)
                                 #rel_path = utils.get_relative_path(path_to_file, path_to_extract)
                                 hash = utils.calculate_blake2(path_to_file)
