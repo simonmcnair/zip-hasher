@@ -28,14 +28,19 @@ def prepend_text_to_filename(filepath, text_to_prepend):
     return new_filepath
 
 def test_image(infile):
-    with Image.open(infile) as im:
-        try:
-            Image.open(im, mode='r', formats=None)
-            Image.load()
-        except Exception as e:
-            logging.error(' FAILED to open: ' + infile + " as an image.  Error " + str(e))
-            return False
-        return True
+    try:
+        with Image.open(infile, mode='r', formats=None) as im:
+            try:
+                Image.load()
+            except Exception as e:
+                logging.error(' FAILED to load: ' + infile + " as an image.  Error " + str(e))
+                return False
+    except Exception as e:
+        logging.error(' FAILED to open: ' + infile + " as an image.  Error " + str(e))
+        return False
+    return True
+
+
         
 def extractor(path_to_zip_file, directory_to_extract):
     print ("extracting files ...")
