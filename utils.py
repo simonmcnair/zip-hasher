@@ -5,10 +5,77 @@ import shutil
 import patoolib
 from PIL import Image
 import logging
+from pydub import AudioSegment
+from pydub.exceptions import CouldntDecodeError
+import sys
+import csv
+
 
 def setup_logging(log_file):
     # Configure logging
-    logging.basicConfig(filename=log_file, level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+    # Set up the root logger
+    logger = logging.getLogger('my_logger')
+    if not logger.handlers:
+        logging.basicConfig(level=logging.DEBUG,
+                            format='%(asctime)s - %(levelname)s - %(message)s')
+
+        # Create a handler and set the level to the lowest level you want to log
+        handler = logging.FileHandler(log_file)
+        handler.setLevel(logging.DEBUG)
+
+        # Create a formatter and set it on the handler
+        formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+        handler.setFormatter(formatter)
+
+        # Add the handler to the root logger
+        logging.getLogger('my_logger').addHandler(handler)
+
+        # Add the console handler to the root logger
+        console_handler = logging.StreamHandler()
+        console_handler.setLevel(logging.DEBUG)
+        console_handler.setFormatter(formatter)
+        logging.getLogger('my_logger').addHandler(console_handler)
+
+def createimagehash(picture_path):
+    logging.info("Reading in " + picture_path)
+ 
+    try:
+        with Image.open(picture_path, formats=None) as image:
+            # Get the image data as bytes
+            image.load()
+            image_bytes = image.tobytes()
+        # Create a hash object and update with image bytes
+        hash_object = hashlib.blake2b(image_bytes)
+        hash_value = hash_object.hexdigest()
+        logging.info(hash_value + " is hash for " + picture_path)
+        return hash_value
+    except Exception as e:
+        logging.warning(picture_path + ' failed to generate image hash.  Error: ' + str(e))
+        return None
+
+
+def createaudiohash(filetohash):
+    logging.info("Hashing " + filetohash)
+    #while True:
+    try:
+        audio = AudioSegment.from_file(filetohash)
+        hash = hashlib.blake2b(audio.raw_data, digest_size=16).hexdigest()
+        logging.info(hash + " is hash for " + filetohash)
+        return hash
+    except CouldntDecodeError as e:
+        logging.error(f"Failed to decode audio file: {e}")
+        return None
+    except IndexError as e:
+        logging.error(f"Index out of range error: {e}")
+        return None
+    except KeyboardInterrupt:
+        # This block will be executed when Ctrl+C is pressed
+        logging.info("Ctrl+C received. Exiting gracefully...")
+        # Perform cleanup operations here, if needed
+        sys.exit(0)
+    except Exception as e:
+        logging.error("Could not create audio hash " +  str(e))
+        return None
 
 def prepend_text_to_filename(filepath, text_to_prepend):
     directory, filename = os.path.split(filepath)
@@ -26,32 +93,31 @@ def prepend_text_to_filename(filepath, text_to_prepend):
         return
 
     return new_filepath
+  
+def writecsvrow(theoutputfile,contents):
 
-def test_image(infile):
     try:
-        with Image.open(infile, mode='r', formats=None) as im:
-            try:
-                im.load()
-            except Exception as e:
-                logging.error(' FAILED to load: ' + infile + " as an image.  Error " + str(e))
-                return False
+        with open(theoutputfile, mode='a', newline='') as file:
+            writer = csv.writer(file,quoting=csv.QUOTE_ALL)
+            writer.writerow(contents)
+        file.close
+        del file
     except Exception as e:
-        logging.error(' FAILED to open: ' + infile + " as an image.  Error " + str(e))
+        logging.error(' FAILED to insert csv row  Error ' + str(e))
         return False
     return True
 
 
-        
 def extractor(path_to_zip_file, directory_to_extract):
-    print ("extracting files ...")
+    logging.info ("extracting files ...")
 
     try:
         patoolib.extract_archive(path_to_zip_file, outdir=directory_to_extract)
     except Exception as e:
-        print("Failed to test archive")
         logging.error(' FAILED to extract: ' + path_to_zip_file + ".  Error " + str(e))
         prepend_text_to_filename(path_to_zip_file, 'bad_archive_')
-        return
+        return False
+    return True
 
 def get_relative_path(path_to_file, temp_dir):
     return os.path.relpath(path_to_file, temp_dir)
@@ -73,16 +139,22 @@ def getListOfFiles(dirName):
     
     return allFiles
 
-def calculate_blake2(file_path, block_size=65536):
+def calculate_blake2b(file_path, block_size=65536):
     hasher = hashlib.blake2b()
+    try:
+        with open(file_path, 'rb') as file:
+            # Read the file in blocks and update the hash
+            for block in iter(lambda: file.read(block_size), b''):
+                hasher.update(block)
+            result = hasher.hexdigest()
+        logging.info("Hash for " + file_path + " is " + result)
+        return result
 
-    with open(file_path, 'rb') as file:
-        # Read the file in blocks and update the hash
-        for block in iter(lambda: file.read(block_size), b''):
-            hasher.update(block)
+    except Exception as e:
+        logging.error("failed to calculate hash " + str(e))
+        return False
 
     # Return the hexadecimal digest of the hash
-    return hasher.hexdigest()
 
 def path_exists(filepath):
     pass
