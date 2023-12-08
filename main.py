@@ -25,6 +25,8 @@ def main(args):
     remainfile = os.path.normpath(args.remainfile)
     utils.setup_logging(logfile)
 
+    processing_dir = utils.get_directory(csv_file_path)
+    sortedfilepath = os.path.join(processing_dir, 'sorted.csv')
 
     utils.logging.info('supported archive extensions : ' + str(supported_archive_extensions))
     utils.logging.info('supported image extensions   : ' + str(supported_image_extensions))
@@ -129,8 +131,8 @@ def main(args):
         for remaining_file in filename_array:
             log_file.write(f"Unprocessed file: {remaining_file}\n")
 
-    result = utils.remove_unique_hashes(csv_file_path,csv_file_path)
-    result = utils.sortcsv(csv_file_path,csv_file_path,'hash')
+    result = utils.remove_unique_hashes(csv_file_path,sortedfilepath,hash)
+    result = utils.sortcsv(sortedfilepath,sortedfilepath,'hash')
 
     if result ==True :
         print("Sort success")

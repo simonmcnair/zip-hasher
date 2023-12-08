@@ -38,7 +38,7 @@ def setup_logging(log_file):
         console_handler.setFormatter(formatter)
         logging.getLogger('my_logger').addHandler(console_handler)
 
-def remove_unique_hashes(inputfile,outputfile):
+def remove_unique_hashes(inputfile,outputfile,field):
 
     # Dictionary to store lines with unique 'hash' values
     hash_lines = defaultdict(list)
@@ -47,7 +47,7 @@ def remove_unique_hashes(inputfile,outputfile):
     with open(inputfile, 'r') as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
-            hash_lines[row['hash']].append(row)
+            hash_lines[row[field]].append(row)
 
     # Filter lines with non-unique 'hash' values
     filtered_lines = [lines[0] for lines in hash_lines.values() if len(lines) == 1]
@@ -59,6 +59,10 @@ def remove_unique_hashes(inputfile,outputfile):
         writer.writeheader()
         writer.writerows(filtered_lines)
 
+def get_directory(full_path):
+    # Using os.path.dirname to extract the directory
+    directory = os.path.dirname(full_path)
+    return directory
 
 def sortcsv(input_csv_path,output_csv_path,field):
 
