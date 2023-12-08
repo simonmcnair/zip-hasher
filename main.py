@@ -36,17 +36,21 @@ def main(args):
 
         with open(csv_file_path, 'r', encoding='utf-8', newline='') as csv_file:
             csv_reader = csv.DictReader(csv_file)
-            for row in csv_reader:
-                filename_array.append(row['filename'])
-
-    
+            try:
+                for row in csv_reader:
+                    filename_array.append(row["filename"])
+            except Exception as e:
+                utils.logging.error(' FAILED to read csv row  Error ' + str(e))
+        array = True
+    else:
+        with open(csv_file_path, mode='w', newline='', encoding='utf-8') as file:
+            writer = csv.writer(file,quoting=csv.QUOTE_ALL)
+            header = ["filename","archive","type", "path to file if archive","hash"]
+            writer.writerow(header) 
+            array = False   
 
     with open(csv_file_path, mode='a', newline='', encoding='utf-8') as file:
         writer = csv.writer(file,quoting=csv.QUOTE_ALL)
-
-        if not os.path.isfile(csv_file_path):
-            header = ["filename","archive",'type', 'path to file if archive',"hash"]
-            writer.writerow(header)
 
         if os.path.exists(dirtoprocess):
 
@@ -58,14 +62,14 @@ def main(args):
                     full_file_path = (os.path.join(root, file_name))
 
 
-                    if file in filename_array:
+                    if array == True and file in filename_array:
                         print(f"file {file} is already in CSV.  Skipping and removing from CSV.")
                         # Remove filename from the array
                         filename_array.remove(file)
                         continue
                     else:
                         # Process the file (replace this with your processing logic)
-                        print(f"File not in CSV.  Processing file: {file}")
+                        print(f"File not in CSV.  Processing file: {file_name}")
 
                         if os.path.normpath(full_file_path) == os.path.normpath(csv_file_path) or os.path.normpath(full_file_path) == os.path.normpath(logfile):
                             utils.logging.info("not processing csv or log file" + full_file_path)
@@ -130,14 +134,15 @@ parser = argparse.ArgumentParser(description='Process some zip files to an XML.'
 #parser.add_argument('-o', '--outputfile', action="store", dest="output", type=str, help="outputcsv", required=False,default="/srv/dev-disk-by-uuid-342ac512-ae09-47a7-842f-d3158537d395/mnt/Comics/output.csv")
 #parser.add_argument('-l', '--logfile', action="store", dest="logfile", type=str, help="log file", required=False,default="/srv/dev-disk-by-uuid-342ac512-ae09-47a7-842f-d3158537d395/mnt/Comics/logfile.txt")
 
-parser.add_argument('-d', '--dir', action="store", dest="dir", type=str, help="pass the path to zip files", required=False,default="/srv/dev-disk-by-uuid-342ac512-ae09-47a7-842f-d3158537d395/mnt/Audio")
-parser.add_argument('-o', '--outputfile', action="store", dest="outputcsv", type=str, help="path to csv file", required=False,default="/srv/dev-disk-by-uuid-342ac512-ae09-47a7-842f-d3158537d395/mnt/Audio/output.csv")
-parser.add_argument('-l', '--logfile', action="store", dest="logfile", type=str, help="log file path", required=False,default="/srv/dev-disk-by-uuid-342ac512-ae09-47a7-842f-d3158537d395/mnt/Audio/logfile.txt")
-parser.add_argument('-r', '--remainder', action="store", dest="remainfile", type=str, help="remain file path", required=False,default="/srv/dev-disk-by-uuid-342ac512-ae09-47a7-842f-d3158537d395/mnt/Audio/remain.txt")
+#parser.add_argument('-d', '--dir', action="store", dest="dir", type=str, help="pass the path to zip files", required=False,default="/srv/dev-disk-by-uuid-342ac512-ae09-47a7-842f-d3158537d395/mnt/Audio")
+#parser.add_argument('-o', '--outputfile', action="store", dest="outputcsv", type=str, help="path to csv file", required=False,default="/srv/dev-disk-by-uuid-342ac512-ae09-47a7-842f-d3158537d395/mnt/Audio/output.csv")
+#parser.add_argument('-l', '--logfile', action="store", dest="logfile", type=str, help="log file path", required=False,default="/srv/dev-disk-by-uuid-342ac512-ae09-47a7-842f-d3158537d395/mnt/Audio/logfile.txt")
+#parser.add_argument('-r', '--remainder', action="store", dest="remainfile", type=str, help="remain file path", required=False,default="/srv/dev-disk-by-uuid-342ac512-ae09-47a7-842f-d3158537d395/mnt/Audio/remain.txt")
 
-#parser.add_argument('-d', '--dir', action="store", dest="dir", type=str, help="pass the path to zip files", required=False,default="Z:/Audio")
-#parser.add_argument('-o', '--outputfile', action="store", dest="outputcsv", type=str, help="outputcsv", required=False,default="Z:/Audio/output.csv")
-#parser.add_argument('-l', '--logfile', action="store", dest="logfile", type=str, help="log file", required=False,default="Z:/Audio/logfile.txt")
+parser.add_argument('-d', '--dir', action="store", dest="dir", type=str, help="pass the path to zip files", required=False,default="Z:/Audio")
+parser.add_argument('-o', '--outputfile', action="store", dest="outputcsv", type=str, help="outputcsv", required=False,default="Z:/Audio/output.csv")
+parser.add_argument('-l', '--logfile', action="store", dest="logfile", type=str, help="log file", required=False,default="Z:/Audio/logfile.txt")
+parser.add_argument('-r', '--remainder', action="store", dest="remainfile", type=str, help="remain file path", required=False,default="z:/Audio/remain.txt")
 
 if __name__=='__main__':
     args = parser.parse_args()
