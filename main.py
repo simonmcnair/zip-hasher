@@ -41,6 +41,7 @@ def main(args):
                     filename_array.append(row["filename"])
             except Exception as e:
                 utils.logging.error(' FAILED to read csv row  Error ' + str(e))
+                utils.sys.exit(1)
         array = True
     else:
         with open(csv_file_path, mode='w', newline='', encoding='utf-8') as file:
@@ -60,7 +61,6 @@ def main(args):
 
                     extension = os.path.splitext(file_name)[1].lower()
                     full_file_path = (os.path.join(root, file_name))
-
 
                     if array == True and file_name in filename_array:
                         print(f"file {file_name} is already in CSV.  Skipping and removing from CSV.")
