@@ -39,6 +39,7 @@ def main(args):
             try:
                 for row in csv_reader:
                     filename_array.append(row["filename"])
+                    utils.logging.debug("adding " + row["filename"] + " to array.")
             except Exception as e:
                 utils.logging.error(' FAILED to read csv row  Error ' + str(e))
                 utils.sys.exit(1)
