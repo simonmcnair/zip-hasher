@@ -62,8 +62,8 @@ def main(args):
                     full_file_path = (os.path.join(root, file_name))
 
 
-                    if array == True and file in filename_array:
-                        print(f"file {file} is already in CSV.  Skipping and removing from CSV.")
+                    if array == True and file_name in filename_array:
+                        print(f"file {file_name} is already in CSV.  Skipping and removing from CSV.")
                         # Remove filename from the array
                         filename_array.remove(file)
                         continue
