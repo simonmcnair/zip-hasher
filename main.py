@@ -45,6 +45,7 @@ def main(args):
                 utils.sys.exit(1)
         array = True
     else:
+        utils.logging.info("No csv file, create one.")
         with open(csv_file_path, mode='w', newline='', encoding='utf-8') as file:
             writer = csv.writer(file,quoting=csv.QUOTE_ALL)
             header = ["filename","archive","type", "path to file if archive","hash"]
