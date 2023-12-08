@@ -34,14 +34,14 @@ def main(args):
         utils.logging.info("csv file present")
         filename_array = []
 
-        with open(csv_file_path, 'r', encoding='utf-8') as csv_file:
+        with open(csv_file_path, 'r', encoding='utf-16') as csv_file:
             csv_reader = csv.DictReader(csv_file)
             for row in csv_reader:
                 filename_array.append(row['filename'])
 
     
 
-    with open(csv_file_path, mode='a', newline='', encoding='utf-8') as file:
+    with open(csv_file_path, mode='a', newline='', encoding='utf-16') as file:
         writer = csv.writer(file,quoting=csv.QUOTE_ALL)
 
         if not os.path.isfile(csv_file_path):
@@ -119,7 +119,7 @@ def main(args):
                                 #utils.writecsvrow(csv_file_path,[full_file_path,'other','-',hash])
                                 writer.writerow([full_file_path,'-','other','-',hash])
 
-    with open(remainfile, 'w', encoding='utf-8') as log_file:
+    with open(remainfile, 'w', encoding='utf-16') as log_file:
         for remaining_file in filename_array:
             log_file.write(f"Unprocessed file: {remaining_file}\n")
 
