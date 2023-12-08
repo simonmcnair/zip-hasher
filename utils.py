@@ -36,6 +36,36 @@ def setup_logging(log_file):
         console_handler.setFormatter(formatter)
         logging.getLogger('my_logger').addHandler(console_handler)
 
+
+def sortcsv(input_csv_path,output_csv_path,field):
+
+    try:
+            # Read the CSV file into a list of dictionaries
+        with open(input_csv_path, 'r', newline='', encoding='utf-8') as csvfile:
+            reader = csv.DictReader(csvfile)
+            data = list(reader)
+
+        # Sort the data based on the 'field' field
+        sorted_data = sorted(data, key=lambda x: x[field])
+
+        # Write the sorted data back to a new CSV file
+        with open(output_csv_path, 'w', newline='', encoding='utf-8') as csvfile:
+            fieldnames = reader.fieldnames
+            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+            
+            # Write the header
+            writer.writeheader()
+            
+            # Write the sorted rows
+            writer.writerows(sorted_data)
+
+        logging.info(f"CSV file sorted and saved to {output_csv_path}")
+        return True
+
+    except Exception as e:
+        logging.error( ' failed to sort CSV.  Error: ' + str(e))
+        return False
+    
 def createimagehash(picture_path):
     logging.info("Reading in " + picture_path)
  

@@ -71,14 +71,14 @@ def main(args):
                         continue
                     else:
                         # Process the file (replace this with your processing logic)
-                        print(f"File not in CSV.  Processing file: {file_name}")
+                        print(f"File not in CSV.  Processing file: {full_file_path}")
 
                         if os.path.normpath(full_file_path) == os.path.normpath(csv_file_path) or os.path.normpath(full_file_path) == os.path.normpath(logfile):
                             utils.logging.info("not processing csv or log file" + full_file_path)
                             continue
 
                         if extension in supported_archive_extensions:
-                            utils.logging.info("Processing archive : " + file_name)
+                            utils.logging.info("Processing archive : " + full_file_path)
                             with tempfile.TemporaryDirectory() as path_to_extract:
                                 utils.logging.info('created temporary directory' + path_to_extract)
                                 result = utils.extractor(full_file_path, path_to_extract)
@@ -106,20 +106,20 @@ def main(args):
 
 
                         elif extension in supported_image_extensions:
-                            utils.logging.info("Processing image : " + file_name)
+                            utils.logging.info("Processing image : " + full_file_path)
                             hash = utils.createimagehash(full_file_path)
                             if hash != False:
                                 #utils.writecsvrow(csv_file_path,[full_file_path,'image','-',hash])
                                 writer.writerow([full_file_path,'-','image','-',hash])
 
                         elif extension in supported_audio_extensions:
-                            utils.logging.info("Processing audio : " + file_name)
+                            utils.logging.info("Processing audio : " + full_file_path)
                             hash = utils.createaudiohash(full_file_path)
                             if hash != False:
                                 #utils.writecsvrow(csv_file_path,[full_file_path,'audio','-',hash])
                                 writer.writerow([full_file_path,'-','audio','-',hash])
                             else:
-                                utils.logging.info("Processing file : " + file_name)
+                                utils.logging.info("Processing file : " + full_file_path)
                                 hash = utils.calculate_blake2b(full_file_path)
                             if hash != False:
                                 #utils.writecsvrow(csv_file_path,[full_file_path,'other','-',hash])
@@ -129,6 +129,12 @@ def main(args):
         for remaining_file in filename_array:
             log_file.write(f"Unprocessed file: {remaining_file}\n")
 
+    result = utils.sortcsv(csv_file_path,csv_file_path,'hash')
+
+    if result ==True :
+        print("Sort success")
+    else:
+        print("Sort failed")
 
 
 parser = argparse.ArgumentParser(description='Process some zip files to an XML.')
