@@ -9,6 +9,8 @@ from pydub import AudioSegment
 from pydub.exceptions import CouldntDecodeError
 import sys
 import csv
+from collections import defaultdict
+
 
 
 def setup_logging(log_file):
@@ -35,6 +37,27 @@ def setup_logging(log_file):
         console_handler.setLevel(logging.DEBUG)
         console_handler.setFormatter(formatter)
         logging.getLogger('my_logger').addHandler(console_handler)
+
+def remove_unique_hashes(inputfile,outputfile):
+
+    # Dictionary to store lines with unique 'hash' values
+    hash_lines = defaultdict(list)
+
+    # Read the CSV file and store lines with unique 'hash' values
+    with open(inputfile, 'r') as csvfile:
+        reader = csv.DictReader(csvfile)
+        for row in reader:
+            hash_lines[row['hash']].append(row)
+
+    # Filter lines with non-unique 'hash' values
+    filtered_lines = [lines[0] for lines in hash_lines.values() if len(lines) == 1]
+
+    # Write the filtered lines to the output CSV file
+    with open(outputfile, 'w', newline='') as csvfile:
+        fieldnames = reader.fieldnames
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(filtered_lines)
 
 
 def sortcsv(input_csv_path,output_csv_path,field):
