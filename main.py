@@ -131,7 +131,7 @@ def main(args):
         for remaining_file in filename_array:
             log_file.write(f"Unprocessed file: {remaining_file}\n")
 
-    result = utils.remove_unique_hashes(csv_file_path,sortedfilepath,hash)
+    result = utils.remove_unique_hashes(csv_file_path,sortedfilepath,'hash')
     result = utils.sortcsv(sortedfilepath,sortedfilepath,'hash')
 
     if result ==True :
