@@ -25,13 +25,28 @@ def main(args):
     remainfile = os.path.normpath(args.remainfile)
     utils.setup_logging(logfile)
 
+
+
     processing_dir = utils.get_directory(csv_file_path)
     sortedfilepath = os.path.join(processing_dir, 'sorted.csv')
     dupefilepath = os.path.join(processing_dir, 'dupepath.csv')
 
+
+
+    utils.logging.info('path : ' + str(dirtoprocess))
+    utils.logging.info('path : ' + str(csv_file_path))
+    utils.logging.info('path : ' + str(logfile))
+    utils.logging.info('path : ' + str(remainfile))
+    utils.logging.info('path : ' + str(processing_dir ))
+    utils.logging.info('path : ' + str(sortedfilepath ))
+    utils.logging.info('path : ' + str(dupefilepath ))
+
+
     utils.logging.info('supported archive extensions : ' + str(supported_archive_extensions))
     utils.logging.info('supported image extensions   : ' + str(supported_image_extensions))
     utils.logging.info('supported Audio extensions   : ' + str(supported_audio_extensions))
+
+    input()
 
     if os.path.isfile(csv_file_path):
         utils.logging.info("csv file present")
