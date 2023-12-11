@@ -42,15 +42,19 @@ def remove_unique_hashes(inputfile,outputfile,field):
 
     # Dictionary to store lines with unique 'hash' values
     hash_lines = defaultdict(list)
+    fieldnames = None
+
 
     # Read the CSV file and store lines with unique 'hash' values
     with open(inputfile, 'r') as csvfile:
         reader = csv.DictReader(csvfile)
+        fieldnames = reader.fieldnames  # Capture fieldnames inside the 'with' block
         for row in reader:
             hash_lines[row[field]].append(row)
 
     # Filter lines with non-unique 'hash' values
-    filtered_lines = [lines[0] for lines in hash_lines.values() if len(lines) == 1]
+    #filtered_lines = [lines[0] for lines in hash_lines.values() if len(lines) == 1]
+    filtered_lines = [line for lines in hash_lines.values() for line in lines if len(lines) > 1]
 
     # Write the filtered lines to the output CSV file
     with open(outputfile, 'w', newline='') as csvfile:
