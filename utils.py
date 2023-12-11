@@ -40,29 +40,30 @@ def setup_logging(log_file):
 
 def remove_duplicates(input_file, output_file,columname):
     # Read the CSV file and remove duplicates based on the 'filename' column
-    unique_rows = []
+    unique_rows = {}
     duplicate_rows = []
-    seen_filenames = set()
+    seen_filenames = []
 
     with open(input_file, 'r') as infile:
         reader = csv.DictReader(infile)
         for row in reader:
             filename = row[columname]
             if filename not in seen_filenames:
-                unique_rows.append(row)
-                seen_filenames.add(filename)
+                #unique_rows.append(row)
+                #seen_filenames.append(filename)
+                unique_rows[filename] = row
             else:
                 duplicate_rows.append(row)
 
     # Write the unique rows back to a new CSV file
-    fieldnames = unique_rows[0].keys() if unique_rows else []
+    fieldnames = unique_rows[list(unique_rows.keys())[0]].keys() if unique_rows else []
     with open(output_file, 'w', newline='') as outfile:
         writer = csv.DictWriter(outfile, fieldnames=fieldnames)
         writer.writeheader()
-        writer.writerows(unique_rows)
+        writer.writerows(unique_rows.values())
 
     for line in duplicate_rows:
-        original_row = seen_filenames[line[columname]]
+        original_row = unique_rows[line]
         logging.info("removed " + str(line) + " as a duplicate of " + original_row)
 
     #for row in duplicate_rows:
