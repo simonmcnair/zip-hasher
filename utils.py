@@ -18,9 +18,9 @@ def setup_logging(log_file):
     # Set up the root logger
     try:
         logger = logging.getLogger('my_logger')
-        if not logger.handlers:
-            logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+        logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
+        if not logger.handlers:
             # Create a handler and set the level to the lowest level you want to log
             handler = logging.FileHandler(log_file)
             handler.setLevel(logging.DEBUG)
