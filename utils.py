@@ -17,26 +17,25 @@ def setup_logging(log_file):
     # Configure logging
     # Set up the root logger
     try:
-        logger = logging.getLogger('my_logger')
+        logger = logging.getLogger()
         logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
         if not logger.handlers:
             # Create a handler and set the level to the lowest level you want to log
+            formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+
             handler = logging.FileHandler(log_file)
             handler.setLevel(logging.DEBUG)
-
             # Create a formatter and set it on the handler
-            formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
             handler.setFormatter(formatter)
-
             # Add the handler to the root logger
-            logging.getLogger('my_logger').addHandler(handler)
+            logging.getLogger().addHandler(handler)
 
             # Add the console handler to the root logger
             console_handler = logging.StreamHandler()
             console_handler.setLevel(logging.DEBUG)
             console_handler.setFormatter(formatter)
-            logging.getLogger('my_logger').addHandler(console_handler)
+            logging.getLogger().addHandler(console_handler)
         else:
             print(f"Handlers are already setup")
             input()
