@@ -73,7 +73,7 @@ def main(args):
                     extension = os.path.splitext(file_name)[1].lower()
                     full_file_path = (os.path.join(root, file_name))
 
-                    if array == True and full_file_path in filename_array:
+                    if array is True and full_file_path in filename_array:
                         utils.logging.info(f"file {full_file_path} is already in CSV.  Skipping and removing from array.  array size is " + str(len(filename_array)))
                         # Remove filename from the array
                         filename_array.remove(full_file_path)
@@ -91,7 +91,7 @@ def main(args):
                             with tempfile.TemporaryDirectory() as path_to_extract:
                                 utils.logging.info('created temporary directory' + path_to_extract)
                                 result = utils.extractor(full_file_path, path_to_extract)
-                                if result != False:
+                                if result is not False:
                                     list_of_all_files = utils.getListOfFiles(path_to_extract)
                                     for path_to_file in list_of_all_files:
                                         utils.logging.info("processing " + path_to_file)
@@ -99,46 +99,46 @@ def main(args):
                                         relativefilename = utils.stripfilepath(path_to_file)
 
                                         if file_extension in supported_image_extensions:
-                                            hash = utils.createimagehash(path_to_file)
-                                            type = 'image'
+                                            hashret = utils.createimagehash(path_to_file)
+                                            filetype = 'image'
                                         elif file_extension in supported_audio_extensions:
-                                            hash = utils.createaudiohash(path_to_file)
-                                            type= 'audio'
+                                            hashret = utils.createaudiohash(path_to_file)
+                                            filetype= 'audio'
                                         else:
                                             utils.logging.info("unknown file just hash it. " + file_extension + " " + path_to_file)
-                                            hash = utils.calculate_blake2b(path_to_file)
-                                            type = 'other'
+                                            hashret = utils.calculate_blake2b(path_to_file)
+                                            filetype = 'other'
 
-                                        if hash != False:
+                                        if hashret is not False:
                                             #utils.writecsvrow(csv_file_path,[full_file_path,'archive',relativefilename,hash])
-                                            writer.writerow([full_file_path,'archive',type,relativefilename,hash])
+                                            writer.writerow([full_file_path,'archive',filetype,relativefilename,hashret])
                                         else:
                                             utils.logging.warning("no hash created for " + full_file_path)
 
 
                         elif extension in supported_image_extensions:
                             utils.logging.info("Processing image : " + full_file_path)
-                            hash = utils.createimagehash(full_file_path)
-                            if hash != False:
+                            hashret = utils.createimagehash(full_file_path)
+                            if hashret is not False:
                                 #utils.writecsvrow(csv_file_path,[full_file_path,'image','-',hash])
-                                writer.writerow([full_file_path,'-','image','-',hash])
+                                writer.writerow([full_file_path,'-','image','-',hashret])
                             else:
                                 utils.logging.warning("no hash created for " + full_file_path)
 
                         elif extension in supported_audio_extensions:
                             utils.logging.info("Processing audio : " + full_file_path)
-                            hash = utils.createaudiohash(full_file_path)
-                            if hash != False:
+                            hashret = utils.createaudiohash(full_file_path)
+                            if hashret is not False:
                                 #utils.writecsvrow(csv_file_path,[full_file_path,'audio','-',hash])
-                                writer.writerow([full_file_path,'-','audio','-',hash])
+                                writer.writerow([full_file_path,'-','audio','-',hashret])
                             else:
                                 utils.logging.warning("no hash created for " + full_file_path)
                         else:
                             utils.logging.info("Processing file : " + full_file_path)
-                            hash = utils.calculate_blake2b(full_file_path)
-                            if hash != False:
+                            hashret = utils.calculate_blake2b(full_file_path)
+                            if hashret is not False:
                                 #utils.writecsvrow(csv_file_path,[full_file_path,'other','-',hash])
-                                writer.writerow([full_file_path,'-','other','-',hash])
+                                writer.writerow([full_file_path,'-','other','-',hashret])
                             else:
                                 utils.logging.warning("no hash created for " + full_file_path)
 
@@ -147,9 +147,9 @@ def main(args):
             log_file.write(f"Unprocessed file: {remaining_file}\n")
 
 
-    result = utils.remove_duplicates(csv_file_path,dupefilepath,'filename')
-    result = utils.remove_unique_hashes(dupefilepath,sortedfilepath,'hash')
-    result = utils.sortcsv(sortedfilepath,sortedfilepath,'hash')
+    utils.remove_duplicates(csv_file_path,dupefilepath,'filename')
+    utils.remove_unique_hashes(dupefilepath,sortedfilepath,'hash')
+    utils.sortcsv(sortedfilepath,sortedfilepath,'hash')
 
     if result ==True :
         utils.logging.info("Sort success")

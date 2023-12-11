@@ -1,15 +1,17 @@
 import os
+import sys
+import csv
+import logging
 import hashlib
 import platform
 import shutil
+from collections import defaultdict
+
 import patoolib
+
 from PIL import Image
-import logging
 from pydub import AudioSegment
 from pydub.exceptions import CouldntDecodeError
-import sys
-import csv
-from collections import defaultdict
 
 
 
@@ -38,7 +40,7 @@ def setup_logging(log_file):
             console_handler.setFormatter(formatter)
             logging.getLogger().addHandler(console_handler)
         else:
-            print(f"Handlers are already setup")
+            print("Handlers are already setup")
 
     except Exception as e:
         print(f"An error occurred during logging setup: {e}.  Press any key to continue")
@@ -52,7 +54,7 @@ def remove_duplicates(input_file, output_file,columname):
     
     logging.info(" remove_duplicates")
 
-    with open(input_file, 'r') as infile:
+    with open(input_file, 'r', encoding='utf-8') as infile:
         reader = csv.DictReader(infile)
         for row in reader:
             filename = row[columname]
@@ -65,18 +67,18 @@ def remove_duplicates(input_file, output_file,columname):
 
     # Write the unique rows back to a new CSV file
     fieldnames = unique_rows[list(unique_rows.keys())[0]].keys() if unique_rows else []
-    with open(output_file, 'w', newline='') as outfile:
+    with open(output_file, 'w', newline='', encoding='utf-8') as outfile:
         writer = csv.DictWriter(outfile, fieldnames=fieldnames)
         writer.writeheader()
         writer.writerows(unique_rows.values())
 
     if len(duplicate_rows) > 1:
-        logging.info("more than 1 duplicate path in the file " + str(len(duplicate_rows)))
+        logging.info("more than 1 duplicate path in the file %s", str(len(duplicate_rows)))
         for line in duplicate_rows:
             original_row = unique_rows[line]
-            logging.info("removed " + str(line) + " as a duplicate of " + original_row)
+            logging.info("removed %e as a duplicate of %f", str(line) , original_row)
     else:
-        logging.info("no duplicate paths in file " + input_file)
+        logging.info('no duplicate paths in file ' + input_file)
 
 
     #for row in duplicate_rows:
@@ -91,7 +93,7 @@ def remove_unique_hashes(inputfile,outputfile,field):
 
 
     # Read the CSV file and store lines with unique 'hash' values
-    with open(inputfile, 'r') as csvfile:
+    with open(inputfile, 'r', encoding='utf-8') as csvfile:
         reader = csv.DictReader(csvfile)
         fieldnames = reader.fieldnames  # Capture fieldnames inside the 'with' block
         for row in reader:
@@ -102,7 +104,7 @@ def remove_unique_hashes(inputfile,outputfile,field):
     filtered_lines = [line for lines in hash_lines.values() for line in lines if len(lines) > 1]
 
     # Write the filtered lines to the output CSV file
-    with open(outputfile, 'w', newline='') as csvfile:
+    with open(outputfile, 'w', newline='', encoding='utf-8') as csvfile:
         fieldnames = reader.fieldnames
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
@@ -264,13 +266,11 @@ def calculate_blake2b(file_path, block_size=65536):
 
     # Return the hexadecimal digest of the hash
 
-def path_exists(filepath):
-    pass
 
 def get_file_size(filepath):
     statinfo = os.stat(filepath)
     return statinfo.st_size
-    
+
 def valid_file(file_path):
     if os.path.exists(file_path):
         return True
@@ -280,9 +280,6 @@ def valid_file(file_path):
 def stripfilepath(full_file_path):
     return os.path.basename(full_file_path)
 
-
 def get_platform():
     pform = platform.system()
     return pform.lower()
-
-
