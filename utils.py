@@ -38,6 +38,27 @@ def setup_logging(log_file):
         console_handler.setFormatter(formatter)
         logging.getLogger('my_logger').addHandler(console_handler)
 
+def remove_duplicates(input_file, output_file,columname):
+    # Read the CSV file and remove duplicates based on the 'filename' column
+    unique_rows = []
+    seen_filenames = set()
+
+    with open(input_file, 'r') as infile:
+        reader = csv.DictReader(infile)
+        for row in reader:
+            filename = row[columname]
+            if filename not in seen_filenames:
+                unique_rows.append(row)
+                seen_filenames.add(filename)
+
+    # Write the unique rows back to a new CSV file
+    fieldnames = unique_rows[0].keys() if unique_rows else []
+    with open(output_file, 'w', newline='') as outfile:
+        writer = csv.DictWriter(outfile, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(unique_rows)
+
+
 def remove_unique_hashes(inputfile,outputfile,field):
 
     # Dictionary to store lines with unique 'hash' values
