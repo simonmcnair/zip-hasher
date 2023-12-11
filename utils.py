@@ -62,7 +62,7 @@ def remove_duplicates(input_file, output_file,columname):
         writer.writerows(unique_rows)
 
     for line in duplicate_rows:
-        logging.info("removed " + line + " as a duplicate of " + seen_filenames[row[columname]])
+        logging.info("removed " + str(line) + " as a duplicate of " + seen_filenames[row[columname]])
 
     #for row in duplicate_rows:
     #    logging.info(f"Removed {row} as a duplicate of {row[column_name]}")
