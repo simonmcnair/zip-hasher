@@ -41,6 +41,7 @@ def setup_logging(log_file):
 def remove_duplicates(input_file, output_file,columname):
     # Read the CSV file and remove duplicates based on the 'filename' column
     unique_rows = []
+    duplicate_rows = []
     seen_filenames = set()
 
     with open(input_file, 'r') as infile:
@@ -50,6 +51,8 @@ def remove_duplicates(input_file, output_file,columname):
             if filename not in seen_filenames:
                 unique_rows.append(row)
                 seen_filenames.add(filename)
+            else:
+                duplicate_rows.append(row)
 
     # Write the unique rows back to a new CSV file
     fieldnames = unique_rows[0].keys() if unique_rows else []
@@ -58,6 +61,11 @@ def remove_duplicates(input_file, output_file,columname):
         writer.writeheader()
         writer.writerows(unique_rows)
 
+    for line in duplicate_rows:
+        logging.info("removed " + line + " as a duplicate of " + seen_filenames[row[columname]])
+
+    #for row in duplicate_rows:
+    #    logging.info(f"Removed {row} as a duplicate of {row[column_name]}")
 
 def remove_unique_hashes(inputfile,outputfile,field):
 
