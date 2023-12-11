@@ -39,12 +39,9 @@ def setup_logging(log_file):
             logging.getLogger().addHandler(console_handler)
         else:
             print(f"Handlers are already setup")
-            input()
-
 
     except Exception as e:
         print(f"An error occurred during logging setup: {e}.  Press any key to continue")
-        input()
 
 
 def remove_duplicates(input_file, output_file,columname):
