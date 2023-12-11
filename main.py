@@ -80,7 +80,7 @@ def main(args):
                         continue
                     else:
                         # Process the file (replace this with your processing logic)
-                        print(f"File not in CSV.  Processing file: {full_file_path}")
+                        utils.logging.info(f"File not in CSV.  Processing file: {full_file_path}")
 
                         if os.path.normpath(full_file_path) == os.path.normpath(csv_file_path) or os.path.normpath(full_file_path) == os.path.normpath(logfile):
                             utils.logging.info("not processing csv or log file" + full_file_path)
@@ -148,13 +148,13 @@ def main(args):
 
 
     result = utils.remove_duplicates(csv_file_path,dupefilepath,'filename')
-    result = utils.remove_unique_hashes(csv_file_path,sortedfilepath,'hash')
+    result = utils.remove_unique_hashes(dupefilepath,sortedfilepath,'hash')
     result = utils.sortcsv(sortedfilepath,sortedfilepath,'hash')
 
     if result ==True :
-        print("Sort success")
+        utils.logging.info("Sort success")
     else:
-        print("Sort failed")
+        utils.logging.info("Sort failed")
 
 
 parser = argparse.ArgumentParser(description='Process some zip files to an XML.')
