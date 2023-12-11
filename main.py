@@ -46,7 +46,6 @@ def main(args):
     utils.logging.info('supported image extensions   : ' + str(supported_image_extensions))
     utils.logging.info('supported Audio extensions   : ' + str(supported_audio_extensions))
 
-    input()
 
     if os.path.isfile(csv_file_path):
         utils.logging.info("csv file present")
