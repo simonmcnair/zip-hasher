@@ -53,7 +53,7 @@ def remove_duplicates(input_file, output_file,columname):
     duplicate_rows = []
     seen_filenames = []
     
-    print("removing duplicates")
+    logging.info(" remove_duplicates")
 
     with open(input_file, 'r') as infile:
         reader = csv.DictReader(infile)
@@ -73,9 +73,14 @@ def remove_duplicates(input_file, output_file,columname):
         writer.writeheader()
         writer.writerows(unique_rows.values())
 
-    for line in duplicate_rows:
-        original_row = unique_rows[line]
-        logging.info("removed " + str(line) + " as a duplicate of " + original_row)
+    if len(duplicate_rows) > 1:
+        logging.info("more than 1 duplicate path in the file " + str(len(duplicate_rows)))
+        for line in duplicate_rows:
+            original_row = unique_rows[line]
+            logging.info("removed " + str(line) + " as a duplicate of " + original_row)
+    else:
+        logging.info("no duplicate paths in file " + input_file)
+
 
     #for row in duplicate_rows:
     #    logging.info(f"Removed {row} as a duplicate of {row[column_name]}")
@@ -85,6 +90,7 @@ def remove_unique_hashes(inputfile,outputfile,field):
     # Dictionary to store lines with unique 'hash' values
     hash_lines = defaultdict(list)
     fieldnames = None
+    logging.info("remove_unique_hashes")
 
 
     # Read the CSV file and store lines with unique 'hash' values
@@ -111,6 +117,8 @@ def get_directory(full_path):
     return directory
 
 def sortcsv(input_csv_path,output_csv_path,field):
+
+    logging.info("sortcsv")
 
     try:
             # Read the CSV file into a list of dictionaries
