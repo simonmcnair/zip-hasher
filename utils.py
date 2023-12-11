@@ -19,8 +19,7 @@ def setup_logging(log_file):
     try:
         logger = logging.getLogger('my_logger')
         if not logger.handlers:
-            logging.basicConfig(level=logging.DEBUG,
-                                format='%(asctime)s - %(levelname)s - %(message)s')
+            logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
             # Create a handler and set the level to the lowest level you want to log
             handler = logging.FileHandler(log_file)
@@ -40,7 +39,9 @@ def setup_logging(log_file):
             logging.getLogger('my_logger').addHandler(console_handler)
 
     except Exception as e:
-        print(f"An error occurred during logging setup: {e}")
+        print(f"An error occurred during logging setup: {e}.  Press any key to continue")
+        input()
+
 
 def remove_duplicates(input_file, output_file,columname):
     # Read the CSV file and remove duplicates based on the 'filename' column
