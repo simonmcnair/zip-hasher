@@ -16,33 +16,39 @@ from collections import defaultdict
 def setup_logging(log_file):
     # Configure logging
     # Set up the root logger
-    logger = logging.getLogger('my_logger')
-    if not logger.handlers:
-        logging.basicConfig(level=logging.DEBUG,
-                            format='%(asctime)s - %(levelname)s - %(message)s')
+    try:
+        logger = logging.getLogger('my_logger')
+        if not logger.handlers:
+            logging.basicConfig(level=logging.DEBUG,
+                                format='%(asctime)s - %(levelname)s - %(message)s')
 
-        # Create a handler and set the level to the lowest level you want to log
-        handler = logging.FileHandler(log_file)
-        handler.setLevel(logging.DEBUG)
+            # Create a handler and set the level to the lowest level you want to log
+            handler = logging.FileHandler(log_file)
+            handler.setLevel(logging.DEBUG)
 
-        # Create a formatter and set it on the handler
-        formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
-        handler.setFormatter(formatter)
+            # Create a formatter and set it on the handler
+            formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+            handler.setFormatter(formatter)
 
-        # Add the handler to the root logger
-        logging.getLogger('my_logger').addHandler(handler)
+            # Add the handler to the root logger
+            logging.getLogger('my_logger').addHandler(handler)
 
-        # Add the console handler to the root logger
-        console_handler = logging.StreamHandler()
-        console_handler.setLevel(logging.DEBUG)
-        console_handler.setFormatter(formatter)
-        logging.getLogger('my_logger').addHandler(console_handler)
+            # Add the console handler to the root logger
+            console_handler = logging.StreamHandler()
+            console_handler.setLevel(logging.DEBUG)
+            console_handler.setFormatter(formatter)
+            logging.getLogger('my_logger').addHandler(console_handler)
+
+    except Exception as e:
+        print(f"An error occurred during logging setup: {e}")
 
 def remove_duplicates(input_file, output_file,columname):
     # Read the CSV file and remove duplicates based on the 'filename' column
     unique_rows = {}
     duplicate_rows = []
     seen_filenames = []
+    
+    print("removing duplicates")
 
     with open(input_file, 'r') as infile:
         reader = csv.DictReader(infile)
