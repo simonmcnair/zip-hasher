@@ -121,6 +121,8 @@ def main(args):
                                         if hash != False:
                                             #utils.writecsvrow(csv_file_path,[full_file_path,'archive',relativefilename,hash])
                                             writer.writerow([full_file_path,'archive',type,relativefilename,hash])
+                                        else:
+                                            utils.logging.warning("no hash created for " + full_file_path)
 
 
                         elif extension in supported_image_extensions:
@@ -129,6 +131,8 @@ def main(args):
                             if hash != False:
                                 #utils.writecsvrow(csv_file_path,[full_file_path,'image','-',hash])
                                 writer.writerow([full_file_path,'-','image','-',hash])
+                            else:
+                                utils.logging.warning("no hash created for " + full_file_path)
 
                         elif extension in supported_audio_extensions:
                             utils.logging.info("Processing audio : " + full_file_path)
@@ -137,11 +141,15 @@ def main(args):
                                 #utils.writecsvrow(csv_file_path,[full_file_path,'audio','-',hash])
                                 writer.writerow([full_file_path,'-','audio','-',hash])
                             else:
-                                utils.logging.info("Processing file : " + full_file_path)
-                                hash = utils.calculate_blake2b(full_file_path)
+                                utils.logging.warning("no hash created for " + full_file_path)
+                        else:
+                            utils.logging.info("Processing file : " + full_file_path)
+                            hash = utils.calculate_blake2b(full_file_path)
                             if hash != False:
                                 #utils.writecsvrow(csv_file_path,[full_file_path,'other','-',hash])
                                 writer.writerow([full_file_path,'-','other','-',hash])
+                            else:
+                                utils.logging.warning("no hash created for " + full_file_path)
 
     with open(remainfile, 'w', encoding='utf-8', newline='') as log_file:
         for remaining_file in filename_array:
