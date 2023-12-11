@@ -27,6 +27,7 @@ def main(args):
 
     processing_dir = utils.get_directory(csv_file_path)
     sortedfilepath = os.path.join(processing_dir, 'sorted.csv')
+    dupefilepath = os.path.join(processing_dir, 'dupepath.csv')
 
     utils.logging.info('supported archive extensions : ' + str(supported_archive_extensions))
     utils.logging.info('supported image extensions   : ' + str(supported_image_extensions))
@@ -132,7 +133,7 @@ def main(args):
             log_file.write(f"Unprocessed file: {remaining_file}\n")
 
 
-    result = utils.remove_duplicates(csv_file_path,csv_file_path,'filename')
+    result = utils.remove_duplicates(csv_file_path,dupefilepath,'filename')
     result = utils.remove_unique_hashes(csv_file_path,sortedfilepath,'hash')
     result = utils.sortcsv(sortedfilepath,sortedfilepath,'hash')
 
