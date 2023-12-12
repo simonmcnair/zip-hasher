@@ -1,11 +1,12 @@
 #!/usr/bin/env python2
 
 import argparse
-import utils
 import os
 import tempfile
 import csv
+import sys
 from PIL import Image
+import utils
 
 exts = Image.registered_extensions()
 supported_image_extensions = {ex for ex, f in exts.items() if f in Image.OPEN}
@@ -16,22 +17,13 @@ pritest = tempfile.gettempdir() # prints the current temporary directory
 createtempdir = tempfile.TemporaryDirectory()
 #f = tempfile.TemporaryFile()
 
-def main(args):
-    dirtoprocess = os.path.normpath(args.dir)
-    csv_file_path = os.path.normpath(args.outputcsv)
-    logfile = os.path.normpath(args.logfile)
-    remainfile = os.path.normpath(args.remainfile)
-    utils.setup_logging(logfile)
-
-    processing_dir = utils.get_directory(csv_file_path)
-    sortedfilepath = os.path.join(processing_dir, 'sorted.csv')
-    dupefilepath = os.path.join(processing_dir, 'dupepath.csv')
-
+def main():
+    """Main subroutine"""
     utils.logging.info('path : ' + str(dirtoprocess))
     utils.logging.info('path : ' + str(csv_file_path))
-    utils.logging.info('path : ' + str(logfile))
+    utils.logging.info('path : ' + str(log_file_path))
     utils.logging.info('path : ' + str(remainfile))
-    utils.logging.info('path : ' + str(processing_dir ))
+    utils.logging.info('path : ' + str(dirtoprocess ))
     utils.logging.info('path : ' + str(sortedfilepath ))
     utils.logging.info('path : ' + str(dupefilepath ))
 
@@ -71,7 +63,7 @@ def main(args):
                 for file_name in files:
 
                     extension = os.path.splitext(file_name)[1].lower()
-                    full_file_path = (os.path.join(root, file_name))
+                    full_file_path = os.path.join(root, file_name)
 
                     if array is True and full_file_path in filename_array:
                         utils.logging.info(f"file {full_file_path} is already in CSV.  Skipping and removing from array.  array size is " + str(len(filename_array)))
@@ -82,7 +74,7 @@ def main(args):
                         # Process the file (replace this with your processing logic)
                         utils.logging.info(f"File not in CSV.  Processing file: {full_file_path}")
 
-                        if os.path.normpath(full_file_path) == os.path.normpath(csv_file_path) or os.path.normpath(full_file_path) == os.path.normpath(logfile):
+                        if os.path.normpath(full_file_path) == os.path.normpath(csv_file_path) or os.path.normpath(full_file_path) == os.path.normpath(log_file_path):
                             utils.logging.info("not processing csv or log file" + full_file_path)
                             continue
 
@@ -151,27 +143,56 @@ def main(args):
     utils.remove_unique_hashes(dupefilepath,sortedfilepath,'hash')
     utils.sortcsv(sortedfilepath,sortedfilepath,'hash')
 
-    if result ==True :
+    if result is True :
         utils.logging.info("Sort success")
     else:
         utils.logging.info("Sort failed")
 
 
-parser = argparse.ArgumentParser(description='Process some zip files to an XML.')
-#parser.add_argument('-d', '--dir', action="store", dest="dir", type=str, help="pass the path to zip files", required=False,default="/srv/dev-disk-by-uuid-342ac512-ae09-47a7-842f-d3158537d395/mnt/Comics")
-#parser.add_argument('-o', '--outputfile', action="store", dest="output", type=str, help="outputcsv", required=False,default="/srv/dev-disk-by-uuid-342ac512-ae09-47a7-842f-d3158537d395/mnt/Comics/output.csv")
-#parser.add_argument('-l', '--logfile', action="store", dest="logfile", type=str, help="log file", required=False,default="/srv/dev-disk-by-uuid-342ac512-ae09-47a7-842f-d3158537d395/mnt/Comics/logfile.txt")
-
-parser.add_argument('-d', '--dir', action="store", dest="dir", type=str, help="pass the path to zip files", required=False,default="/srv/dev-disk-by-uuid-342ac512-ae09-47a7-842f-d3158537d395/mnt/Audio")
-parser.add_argument('-o', '--outputfile', action="store", dest="outputcsv", type=str, help="path to csv file", required=False,default="/srv/dev-disk-by-uuid-342ac512-ae09-47a7-842f-d3158537d395/mnt/Audio/output.csv")
-parser.add_argument('-l', '--logfile', action="store", dest="logfile", type=str, help="log file path", required=False,default="/srv/dev-disk-by-uuid-342ac512-ae09-47a7-842f-d3158537d395/mnt/Audio/logfile.txt")
-parser.add_argument('-r', '--remainder', action="store", dest="remainfile", type=str, help="remain file path", required=False,default="/srv/dev-disk-by-uuid-342ac512-ae09-47a7-842f-d3158537d395/mnt/Audio/remain.txt")
-
-#parser.add_argument('-d', '--dir', action="store", dest="dir", type=str, help="pass the path to zip files", required=False,default="Z:/Audio")
-#parser.add_argument('-o', '--outputfile', action="store", dest="outputcsv", type=str, help="outputcsv", required=False,default="Z:/Audio/output.csv")
-#parser.add_argument('-l', '--logfile', action="store", dest="logfile", type=str, help="log file", required=False,default="Z:/Audio/logfile.txt")
-#parser.add_argument('-r', '--remainder', action="store", dest="remainfile", type=str, help="remain file path", required=False,default="z:/Audio/remain.txt")
+#processing_dir = os.path.dirname(os.path.abspath(__file__))
 
 if __name__=='__main__':
-    args = parser.parse_args()
-    main(args)
+    if len(sys.argv) > 1:
+
+        parser = argparse.ArgumentParser(description='Process some zip files to an XML.')
+        #parser.add_argument('-d', '--dir', action="store", dest="dir", type=str, help="pass the path to zip files", required=False,default="/srv/dev-disk-by-uuid-342ac512-ae09-47a7-842f-d3158537d395/mnt/Comics")
+        #parser.add_argument('-o', '--outputfile', action="store", dest="output", type=str, help="outputcsv", required=False,default="/srv/dev-disk-by-uuid-342ac512-ae09-47a7-842f-d3158537d395/mnt/Comics/output.csv")
+        #parser.add_argument('-l', '--logfile', action="store", dest="logfile", type=str, help="log file", required=False,default="/srv/dev-disk-by-uuid-342ac512-ae09-47a7-842f-d3158537d395/mnt/Comics/logfile.txt")
+
+        parser.add_argument('-d', '--dir', action="store", dest="dir", type=str, help="pass the path to zip files", required=False,default="/srv/dev-disk-by-uuid-342ac512-ae09-47a7-842f-d3158537d395/mnt/Audio")
+        parser.add_argument('-o', '--outputfile', action="store", dest="outputcsv", type=str, help="path to csv file", required=False,default="/srv/dev-disk-by-uuid-342ac512-ae09-47a7-842f-d3158537d395/mnt/Audio/output.csv")
+        parser.add_argument('-l', '--logfile', action="store", dest="log_file_path", type=str, help="log file path", required=False,default="/srv/dev-disk-by-uuid-342ac512-ae09-47a7-842f-d3158537d395/mnt/Audio/logfile.txt")
+        parser.add_argument('-r', '--remainder', action="store", dest="remainfile", type=str, help="remain file path", required=False,default="/srv/dev-disk-by-uuid-342ac512-ae09-47a7-842f-d3158537d395/mnt/Audio/remain.txt")
+
+        #parser.add_argument('-d', '--dir', action="store", dest="dir", type=str, help="pass the path to zip files", required=False,default="Z:/Audio")
+        #parser.add_argument('-o', '--outputfile', action="store", dest="outputcsv", type=str, help="outputcsv", required=False,default="Z:/Audio/output.csv")
+        #parser.add_argument('-l', '--logfile', action="store", dest="logfile", type=str, help="log file", required=False,default="Z:/Audio/logfile.txt")
+        #parser.add_argument('-r', '--remainder', action="store", dest="remainfile", type=str, help="remain file path", required=False,default="z:/Audio/remain.txt")
+
+        args = parser.parse_args()
+        dirtoprocess = os.path.normpath(args.dir)
+        csv_file_path = os.path.normpath(args.outputcsv)
+        log_file_path = os.path.normpath(args.logfile)
+        remainfile = os.path.normpath(args.remainfile)
+
+        #processing_dir = utils.get_directory(csv_file_path)
+
+        sortedfilepath = os.path.join(dirtoprocess, 'sorted.csv')
+        dupefilepath = os.path.join(dirtoprocess, 'dupepath.csv')
+
+        utils.setup_logging(log_file_path)
+        main()
+    else:
+        #processing_dir = utils.get_directory(csv_file_path)
+
+        #dirtoprocess = "/srv/dev-disk-by-uuid-342ac512-ae09-47a7-842f-d3158537d395/mnt/Audio"
+        dirtoprocess = "Z:/Audio"
+        csv_file_path = os.path.join(dirtoprocess, 'output.csv')
+        log_file_path = os.path.join(dirtoprocess, 'logfile.log')
+        remainfile = os.path.join(dirtoprocess, 'remainfile.log')
+
+        sortedfilepath = os.path.join(dirtoprocess, 'sorted.csv')
+        dupefilepath = os.path.join(dirtoprocess, 'dupepath.csv')
+
+        utils.setup_logging(log_file_path)
+        main()

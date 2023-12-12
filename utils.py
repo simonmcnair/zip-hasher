@@ -51,7 +51,7 @@ def remove_duplicates(input_file, output_file,columname):
     unique_rows = {}
     duplicate_rows = []
     seen_filenames = []
-    
+
     logging.info(" remove_duplicates")
 
     with open(input_file, 'r', encoding='utf-8') as infile:
@@ -132,10 +132,10 @@ def sortcsv(input_csv_path,output_csv_path,field):
         with open(output_csv_path, 'w', newline='', encoding='utf-8') as csvfile:
             fieldnames = reader.fieldnames
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-            
+
             # Write the header
             writer.writeheader()
-            
+
             # Write the sorted rows
             writer.writerows(sorted_data)
 
@@ -143,12 +143,12 @@ def sortcsv(input_csv_path,output_csv_path,field):
         return True
 
     except Exception as e:
-        logging.error( ' failed to sort CSV.  Error: ' + str(e))
+        logging.error('failed to sort CSV.  Error: %e', str(e))
         return False
-    
+
 def createimagehash(picture_path):
     logging.info("Reading in " + picture_path)
- 
+
     try:
         with Image.open(picture_path, formats=None) as image:
             # Get the image data as bytes
@@ -193,7 +193,7 @@ def prepend_text_to_filename(filepath, text_to_prepend):
     if base_name.startswith(text_to_prepend):
         logging.info(filepath + " already begins with " + text_to_prepend)
         return filepath
-     
+
     new_base_name = f"{text_to_prepend}_{base_name}"
     new_filepath = os.path.join(directory, new_base_name + extension)
     try:
@@ -203,7 +203,7 @@ def prepend_text_to_filename(filepath, text_to_prepend):
         return
 
     return new_filepath
-  
+
 def writecsvrow(theoutputfile,contents):
 
     try:
@@ -246,7 +246,7 @@ def getListOfFiles(dirName):
             allFiles = allFiles + getListOfFiles(fullPath)
         else:
             allFiles.append(fullPath)
-    
+
     return allFiles
 
 def calculate_blake2b(file_path, block_size=65536):
