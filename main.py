@@ -98,26 +98,31 @@ def main():
                     if extension in supported_archive_extensions:
                         utils.logging.info("Processing archive : " + full_file_path)
                         isarchive = 'True'
-                        with tempfile.TemporaryDirectory() as path_to_extract:
-                            utils.logging.info('created temporary directory' + path_to_extract)
-                            result = utils.extractor(full_file_path, path_to_extract)
-                            if result is not False:
-                                list_of_all_files = utils.getListOfFiles(path_to_extract)
-                                for path_to_file in list_of_all_files:
-                                    utils.logging.info("processing " + path_to_file)
-                                    file_extension = os.path.splitext(path_to_file)[1].lower()
-                                    relativefilename = utils.stripfilepath(path_to_file)
 
-                                    if file_extension in supported_image_extensions:
-                                        hashret = utils.createimagehash(path_to_file)
-                                        filetype = 'image'
-                                    elif file_extension in supported_audio_extensions:
-                                        hashret = utils.createaudiohash(path_to_file)
-                                        filetype= 'audio'
-                                    else:
-                                        utils.logging.info("unknown file just hash it. " + file_extension + " " + path_to_file)
-                                        hashret = utils.calculate_blake2b(path_to_file)
-                                        filetype = 'other'
+                        try:
+                            with tempfile.TemporaryDirectory() as path_to_extract:
+                                utils.logging.info('created temporary directory' + path_to_extract)
+                                result = utils.extractor(full_file_path, path_to_extract)
+                                if result is not None:
+                                    list_of_all_files = utils.getListOfFiles(path_to_extract)
+                                    for path_to_file in list_of_all_files:
+                                        utils.logging.info("processing " + path_to_file)
+                                        file_extension = os.path.splitext(path_to_file)[1].lower()
+                                        relativefilename = utils.stripfilepath(path_to_file)
+
+                                        if file_extension in supported_image_extensions:
+                                            hashret = utils.createimagehash(path_to_file)
+                                            filetype = 'image'
+                                        elif file_extension in supported_audio_extensions:
+                                            hashret = utils.createaudiohash(path_to_file)
+                                            filetype= 'audio'
+                                        else:
+                                            utils.logging.info("unknown file just hash it. " + file_extension + " " + path_to_file)
+                                            hashret = utils.calculate_blake2b(path_to_file)
+                                            filetype = 'other'
+                        except Exception as e:
+                            utils.logging.error("extraction FAILED.  Error " + str(e))
+                            continue
 
                     elif extension in supported_image_extensions:
                         utils.logging.info("Processing image : " + full_file_path)
