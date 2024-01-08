@@ -59,7 +59,7 @@ def main():
                 utils.logging.error(' FAILED to read csv row  Error ' + str(e))
                 utils.sys.exit(1)
         array = True
-        utils.logging.debug("The number of cache entries is " + len(filename_array))
+        utils.logging.debug("The number of cache entries is " + str(len(filename_array)))
     else:
         utils.logging.info("No csv file, create one.")
         utils.writecsvrow(cache_file_path,["filename","archive","type", "path to file if archive","hash"])
