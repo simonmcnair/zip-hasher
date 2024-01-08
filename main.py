@@ -8,7 +8,9 @@ import sys
 from PIL import Image
 import utils
 from pathlib import Path
-
+#python3.11 -m venv venv
+#source ./venv/bin/activate
+#pip install pataool
 
 exts = Image.registered_extensions()
 supported_image_extensions = {ex for ex, f in exts.items() if f in Image.OPEN}
