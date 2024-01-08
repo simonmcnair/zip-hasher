@@ -178,7 +178,7 @@ if __name__=='__main__':
         sortedfilepath = os.path.join(get_script_path(),  'sorted.csv')
         dupefilepath = os.path.join(get_script_path(),  'dupepath.csv')
 
-        utils.setup_logging(log_file_path)
+        utils.setup_logging(log_file_path, log_level=logging.INFO)
         main()
     else:
 
@@ -196,5 +196,5 @@ if __name__=='__main__':
         else:
             print("No local overrides.")
 
-        utils.setup_logging(log_file_path)
+        utils.setup_logging(log_file_path,'info')
         main()
