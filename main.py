@@ -103,7 +103,7 @@ def main():
                             with tempfile.TemporaryDirectory() as path_to_extract:
                                 utils.logging.info('created temporary directory' + path_to_extract)
                                 result = utils.extractor(full_file_path, path_to_extract)
-                                if result is not None:
+                                if result is not False:
                                     list_of_all_files = utils.getListOfFiles(path_to_extract)
                                     for path_to_file in list_of_all_files:
                                         utils.logging.info("processing " + path_to_file)
@@ -120,6 +120,8 @@ def main():
                                             utils.logging.info("unknown file just hash it. " + file_extension + " " + path_to_file)
                                             hashret = utils.calculate_blake2b(path_to_file)
                                             filetype = 'other'
+                                else:
+                                    hashret = False
                         except Exception as e:
                             utils.logging.error("extraction FAILED.  Error " + str(e))
                             hashret = False
