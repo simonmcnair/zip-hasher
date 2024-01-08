@@ -2,3 +2,7 @@ venv/
 *.pyc
 temp/
 py3env/
+localoverridesfile_*
+*.log
+*.cache
+*.csv
