@@ -233,7 +233,7 @@ def extractor(path_to_zip_file, directory_to_extract):
     except Exception as e:
         logging.error(' FAILED to extract: ' + path_to_zip_file + ".  Error " + str(e))
         prepend_text_to_filename(path_to_zip_file, 'bad_archive_')
-        return None
+        return False
     return True
 
 def get_relative_path(path_to_file, temp_dir):
