@@ -122,7 +122,7 @@ def main():
                                             filetype = 'other'
                         except Exception as e:
                             utils.logging.error("extraction FAILED.  Error " + str(e))
-                            continue
+                            hashret = False
 
                     elif extension in supported_image_extensions:
                         utils.logging.info("Processing image : " + full_file_path)
@@ -141,7 +141,7 @@ def main():
                     if hashret is not False:
                         utils.writecsvrow(cache_file_path,[full_file_path,isarchive,filetype,relativefilename,hashret])
                     else:
-                        utils.logging.warning("no hash created for " + full_file_path)
+                        utils.logging.error("no hash created for " + full_file_path)
 
 
     with open(remainfile, 'w', encoding='utf-8', newline='') as log_file:
