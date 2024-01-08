@@ -59,6 +59,7 @@ def main():
                 utils.logging.error(' FAILED to read csv row  Error ' + str(e))
                 utils.sys.exit(1)
         array = True
+        utils.logging.debug("The number of cache entries is " + len(filename_array))
     else:
         utils.logging.info("No csv file, create one.")
         utils.writecsvrow(cache_file_path,["filename","archive","type", "path to file if archive","hash"])
@@ -80,7 +81,7 @@ def main():
                 full_file_path = os.path.join(root, file_name)
 
                 if array is True and full_file_path in filename_array:
-                    utils.logging.info(f"file {full_file_path} is already in CSV.  Skipping and removing from array.  array size is " + str(len(filename_array)))
+                    utils.logging.debug(f"file {full_file_path} is already in CSV.  Skipping and removing from array.  array size is " + str(len(filename_array)))
                     # Remove filename from the array
                     filename_array.remove(full_file_path)
                     continue
