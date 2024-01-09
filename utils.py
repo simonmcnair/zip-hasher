@@ -6,6 +6,7 @@ import hashlib
 import platform
 import shutil
 from collections import defaultdict
+import psutil
 
 import patoolib
 
@@ -224,9 +225,50 @@ def writecsvrow(theoutputfile,contents):
         return False
     return True
 
+def check_disk_space_for_extraction(archive_path, destination_path='.'):
+    try:
+        # Get the size of the archive
+       # archive_size = patoolib.get_archive_size(archive_path)
+        #this doesn't exist.
+        archive_size = 0
+        # Get available disk space
+        disk_space = psutil.disk_usage(destination_path).free
 
+        # Check if there is enough disk space
+        if disk_space >= archive_size:
+            print("There is enough disk space to extract the archive.")
+            return True
+        else:
+            print("Insufficient disk space to extract the archive.")
+            return False
+    except Exception as e:
+        print(f"Error: {e}")
+        return False
+
+def get_expanded_size(archive_path):
+    try:
+        size = patoolib.get_archive_size(archive_path)
+        return size
+    except Exception as e:
+        print(f"Error: {e}")
+        return None
+
+def get_disk_space():
+    try:
+        disk = psutil.disk_usage('/')
+        free_space = disk.free
+        return free_space
+    except Exception as e:
+        print(f"Error: {e}")
+        return None
+    
 def extractor(path_to_zip_file, directory_to_extract):
     logging.info ("extracting files ...")
+
+    result = check_disk_space_for_extraction(path_to_zip_file)
+    if result == False:
+        logging.error(' FAILED to extract: ' + path_to_zip_file + ".  Insufficient space to extract archive")
+        return False
 
     try:
         patoolib.extract_archive(path_to_zip_file, outdir=directory_to_extract)

@@ -11,6 +11,9 @@ from pathlib import Path
 #python3.11 -m venv venv
 #source ./venv/bin/activate
 #pip install pataool
+#pip install psutil
+#pip install pillow
+
 
 exts = Image.registered_extensions()
 supported_image_extensions = {ex for ex, f in exts.items() if f in Image.OPEN}
@@ -77,6 +80,7 @@ def main():
 
             for file_name in files:
 
+                hasher = []
                 extension = os.path.splitext(file_name)[1].lower()
                 full_file_path = os.path.join(root, file_name)
 
@@ -94,6 +98,7 @@ def main():
                         continue
 
                     isarchive = 'False'
+                    hashret = False
                     relativefilename = '-'
 
                     if extension in supported_archive_extensions:
@@ -112,15 +117,19 @@ def main():
                                         relativefilename = utils.stripfilepath(path_to_file)
 
                                         if file_extension in supported_image_extensions:
-                                            hashret = utils.createimagehash(path_to_file)
+                                            hash = (utils.createimagehash(path_to_file))
                                             filetype = 'image'
                                         elif file_extension in supported_audio_extensions:
-                                            hashret = utils.createaudiohash(path_to_file)
+                                            hash = (utils.createaudiohash(path_to_file))
                                             filetype= 'audio'
                                         else:
                                             utils.logging.info("unknown file just hash it. " + file_extension + " " + path_to_file)
-                                            hashret = utils.calculate_blake2b(path_to_file)
+                                            hash = (utils.calculate_blake2b(path_to_file))
                                             filetype = 'other'
+                                        if hash != False:
+                                            deets = [full_file_path,isarchive,filetype,relativefilename,hash]
+                                            hasher.append (deets)
+                                    hashret = True
                                 else:
                                     hashret = False
                         except Exception as e:
@@ -129,20 +138,25 @@ def main():
 
                     elif extension in supported_image_extensions:
                         utils.logging.info("Processing image : " + full_file_path)
-                        hashret = utils.createimagehash(full_file_path)
+                        hashret = (utils.createimagehash(full_file_path))
                         filetype = 'image'
 
                     elif extension in supported_audio_extensions:
                         utils.logging.info("Processing audio : " + full_file_path)
-                        hashret = utils.createaudiohash(full_file_path)
+                        hashret = (utils.createaudiohash(full_file_path))
                         filetype = 'audio'
                     else:
                         utils.logging.info("Processing file : " + full_file_path)
-                        hashret = utils.calculate_blake2b(full_file_path)
+                        hashret = (utils.calculate_blake2b(full_file_path))
                         filetype = 'other'
 
-                    if hashret is not False:
-                        utils.writecsvrow(cache_file_path,[full_file_path,isarchive,filetype,relativefilename,hashret])
+                    if hashret != False:
+                        if len(hasher) >0:
+                            for each in hasher:
+                                utils.writecsvrow(cache_file_path,[each[0],each[1],each[2],each[3],each[4]])
+                        else:
+                            utils.writecsvrow(cache_file_path,[full_file_path,isarchive,filetype,relativefilename,hashret])
+
                     else:
                         utils.logging.error("no hash created for " + full_file_path)
 
