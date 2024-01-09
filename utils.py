@@ -39,20 +39,20 @@ def setup_logging(log_file, errorlog_path,log_level='debug'):
 
             handler = logging.FileHandler(log_file)
             handler.setLevel(log_level)
-            # Create a formatter and set it on the handler
             handler.setFormatter(formatter)
-            # Add the handler to the root logger
-            logging.getLogger().addHandler(handler)
 
             error_handler = logging.FileHandler(errorlog_path)
             error_handler.setLevel(logging.ERROR)  # Only logs messages with ERROR level or higher
             error_handler.setFormatter(formatter)
 
-            # Add the console handler to the root logger
             console_handler = logging.StreamHandler()
             console_handler.setLevel(log_level)
             console_handler.setFormatter(formatter)
-            logging.getLogger().addHandler(console_handler)
+
+            logging.addHandler(handler)
+            logging.addHandler(console_handler)
+            logging.addHandler(error_handler)
+
         else:
             print("Handlers are already setup")
 
