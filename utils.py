@@ -195,7 +195,7 @@ def createaudiohash(filetohash):
     except Exception as e:
         logging.error("Could not create audio hash " +  str(e))
     
-    if rename_bad_audio_files = True:
+    if rename_bad_audio_files == True:
         prepend_text_to_filename(filetohash, 'bad_audiofile_')
     return None
 
