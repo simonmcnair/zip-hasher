@@ -104,7 +104,9 @@ def main():
                     if extension in supported_archive_extensions:
                         utils.logging.info("Processing archive : " + full_file_path)
                         isarchive = 'True'
-                        if utils.is_file_larger_than(full_file_path, maxarchive_size)
+                        if utils.is_file_larger_than(full_file_path, maxarchive_size):
+                            utils.logging.warning("file "+ "full_file_path + is larger than " + str(maxarchive_size) + " so skip it")
+                            continue
 
                         try:
                             with tempfile.TemporaryDirectory() as path_to_extract:
