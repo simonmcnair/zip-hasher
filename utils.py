@@ -195,6 +195,33 @@ def createaudiohash(filetohash):
         logging.error("Could not create audio hash " +  str(e))
         return None
 
+def is_file_larger_than(file_path, size_limit):
+    # Convert human-readable size to bytes
+    def human_readable_to_bytes(size_str):
+        size_str = size_str.upper()
+        multiplier = {'KB': 1024, 'MB': 1024 ** 2, 'GB': 1024 ** 3, 'TB': 1024 ** 4}
+        for unit, factor in multiplier.items():
+            if unit in size_str:
+                return int(float(size_str.replace(unit, '')) * factor)
+        return int(size_str)
+
+    try:
+        # Get the size of the file
+        file_size = os.path.getsize(file_path)
+
+        # Check if the file size is larger than the specified limit
+        return file_size > human_readable_to_bytes(size_limit)
+    except Exception as e:
+        print(f"Error: {e}")
+        return False
+    
+def sizeof_fmt(num, suffix="B"):
+    for unit in ("", "Ki", "Mi", "Gi", "Ti", "Pi", "Ei", "Zi"):
+        if abs(num) < 1024.0:
+            return f"{num:3.1f}{unit}{suffix}"
+        num /= 1024.0
+    return f"{num:.1f}Yi{suffix}"
+
 def prepend_text_to_filename(filepath, text_to_prepend):
     directory, filename = os.path.split(filepath)
     base_name, extension = os.path.splitext(filename)

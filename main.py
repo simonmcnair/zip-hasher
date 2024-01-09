@@ -104,6 +104,7 @@ def main():
                     if extension in supported_archive_extensions:
                         utils.logging.info("Processing archive : " + full_file_path)
                         isarchive = 'True'
+                        if utils.is_file_larger_than(full_file_path, maxarchive_size)
 
                         try:
                             with tempfile.TemporaryDirectory() as path_to_extract:
@@ -180,6 +181,7 @@ def main():
 localoverridesfile = os.path.join(get_script_path(), "localoverridesfile_" + get_script_name() + '.py')
 log_file_path =  os.path.join(get_script_path(),get_script_name() + '.log')
 cache_file_path =  os.path.join(get_script_path(),get_script_name() + '.cache')
+maxarchive_size='1GB'
 
 if __name__=='__main__':
     if len(sys.argv) > 1:
