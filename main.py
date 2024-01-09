@@ -182,6 +182,7 @@ def main():
 #processing_dir = os.path.dirname(os.path.abspath(__file__))
 localoverridesfile = os.path.join(get_script_path(), "localoverridesfile_" + get_script_name() + '.py')
 log_file_path =  os.path.join(get_script_path(),get_script_name() + '.log')
+errorlog_file_path =  os.path.join(get_script_path(),get_script_name() + '_error.log')
 cache_file_path =  os.path.join(get_script_path(),get_script_name() + '.cache')
 maxarchive_size='1GB'
 
@@ -205,7 +206,7 @@ if __name__=='__main__':
         sortedfilepath = os.path.join(get_script_path(),  'sorted.csv')
         dupefilepath = os.path.join(get_script_path(),  'dupepath.csv')
 
-        utils.setup_logging(log_file_path, log_level=logging.INFO)
+        utils.setup_logging(log_file_path, errorlog_file_path, 'info')
         main()
     else:
 
@@ -223,5 +224,5 @@ if __name__=='__main__':
         else:
             print("No local overrides.")
 
-        utils.setup_logging(log_file_path,'info')
+        utils.setup_logging(log_file_path,errorlog_file_path, 'info')
         main()

@@ -18,7 +18,7 @@ rename_bad_archive_files = True
 rename_bad_audio_files = True
 rename_bad_image_files = True
 
-def setup_logging(log_file, log_level='debug'):
+def setup_logging(log_file, errorlog_path,log_level='debug'):
     # Configure logging
     # Set up the root logger
     if log_level == 'debug':
@@ -43,6 +43,10 @@ def setup_logging(log_file, log_level='debug'):
             handler.setFormatter(formatter)
             # Add the handler to the root logger
             logging.getLogger().addHandler(handler)
+
+            error_handler = logging.FileHandler(errorlog_path)
+            error_handler.setLevel(logging.ERROR)  # Only logs messages with ERROR level or higher
+            error_handler.setFormatter(formatter)
 
             # Add the console handler to the root logger
             console_handler = logging.StreamHandler()
