@@ -80,6 +80,10 @@ def main():
 
             for file_name in files:
 
+                if not dirs and not files:
+                    utils.logging.info("empty directory: " + root)
+                    continue
+
                 hasher = []
                 extension = os.path.splitext(file_name)[1].lower()
                 full_file_path = os.path.join(root, file_name)

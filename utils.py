@@ -29,32 +29,33 @@ def setup_logging(log_file, errorlog_path,log_level='debug'):
         log_level=logging.WARNING
 
     try:
-        logger = logging.getLogger()
-
-        if not logger.handlers:
-            logging.basicConfig(level=log_level, format='%(asctime)s - %(levelname)s - %(message)s')
-
-            # Create a handler and set the level to the lowest level you want to log
-            formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
-
-            handler = logging.FileHandler(log_file)
-            handler.setLevel(log_level)
-            handler.setFormatter(formatter)
-
-            error_handler = logging.FileHandler(errorlog_path)
-            error_handler.setLevel(logging.ERROR)  # Only logs messages with ERROR level or higher
-            error_handler.setFormatter(formatter)
-
-            console_handler = logging.StreamHandler()
-            console_handler.setLevel(log_level)
-            console_handler.setFormatter(formatter)
-
-            logging.getLogger().addHandler(handler)
-            logging.getLogger().addHandler(console_handler)
-            logging.getLogger().addHandler(error_handler)
-
+        if logging.get():
+            return logging.get()
         else:
-            print("Handlers are already setup")
+            logger = logging.getLogger()
+            if not logger.handlers:
+                logging.basicConfig(level=log_level, format='%(asctime)s - %(levelname)s - %(message)s')
+
+                # Create a handler and set the level to the lowest level you want to log
+                formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+
+                handler = logging.FileHandler(log_file)
+                error_handler = logging.FileHandler(errorlog_path)
+                console_handler = logging.StreamHandler()
+
+                handler.setLevel(log_level)
+                error_handler.setLevel(logging.ERROR)  # Only logs messages with ERROR level or higher
+                console_handler.setLevel(log_level)
+
+                handler.setFormatter(formatter)
+                console_handler.setFormatter(formatter)
+                error_handler.setFormatter(formatter)
+
+                logging.getLogger().addHandler(handler)
+                logging.getLogger().addHandler(console_handler)
+                logging.getLogger().addHandler(error_handler)
+            else:
+                print("Handlers are already setup")
 
     except Exception as e:
         print(f"An error occurred during logging setup: {e}.  Press any key to continue")
