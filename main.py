@@ -190,6 +190,7 @@ errorlog_file_path =  os.path.join(get_script_path(),get_script_name() + '_error
 cache_file_path =  os.path.join(get_script_path(),get_script_name() + '.cache')
 maxarchive_size='1GB'
 
+#logging = ''
 
 if __name__=='__main__':
     if len(sys.argv) > 1:
@@ -229,4 +230,5 @@ if __name__=='__main__':
             print("No local overrides.")
 
         utils.setup_logging(log_file_path,errorlog_file_path, 'info')
+        utils.logging.error("test")
         main()

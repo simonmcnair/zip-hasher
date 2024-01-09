@@ -21,6 +21,7 @@ rename_bad_image_files = True
 def setup_logging(log_file, errorlog_path,log_level='debug'):
     # Configure logging
     # Set up the root logger
+    #global logging
     if log_level == 'debug':
         log_level=logging.DEBUG
     elif log_level == 'info':
@@ -29,31 +30,33 @@ def setup_logging(log_file, errorlog_path,log_level='debug'):
         log_level=logging.WARNING
 
     try:
-        if logging.get():
-            return logging.get()
-        else:
-            logger = logging.getLogger()
+        #if logging.getLogger():
+        #    return logging.getLogger()
+        #else:
+            logger = logging.getLogger('main')
             if not logger.handlers:
                 logging.basicConfig(level=log_level, format='%(asctime)s - %(levelname)s - %(message)s')
 
                 # Create a handler and set the level to the lowest level you want to log
                 formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 
-                handler = logging.FileHandler(log_file)
+                filehandler = logging.FileHandler(log_file)
+                filehandler.setLevel(log_level)
+                filehandler.setFormatter(formatter)
+                logging.getLogger('main').addHandler(filehandler)
+
+
                 error_handler = logging.FileHandler(errorlog_path)
-                console_handler = logging.StreamHandler()
-
-                handler.setLevel(log_level)
                 error_handler.setLevel(logging.ERROR)  # Only logs messages with ERROR level or higher
-                console_handler.setLevel(log_level)
-
-                handler.setFormatter(formatter)
-                console_handler.setFormatter(formatter)
                 error_handler.setFormatter(formatter)
+                logging.getLogger('main').addHandler(error_handler)
 
-                logging.getLogger().addHandler(handler)
-                logging.getLogger().addHandler(console_handler)
-                logging.getLogger().addHandler(error_handler)
+
+                console_handler = logging.StreamHandler()
+                console_handler.setLevel(log_level)
+                console_handler.setFormatter(formatter)
+                logging.getLogger('main').addHandler(console_handler)
+
             else:
                 print("Handlers are already setup")
 
