@@ -49,9 +49,9 @@ def setup_logging(log_file, errorlog_path,log_level='debug'):
             console_handler.setLevel(log_level)
             console_handler.setFormatter(formatter)
 
-            logging.addHandler(handler)
-            logging.addHandler(console_handler)
-            logging.addHandler(error_handler)
+            logging.getLogger().addHandler(handler)
+            logging.getLogger().addHandler(console_handler)
+            logging.getLogger().addHandler(error_handler)
 
         else:
             print("Handlers are already setup")
