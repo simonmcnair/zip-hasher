@@ -155,6 +155,7 @@ def sortcsv(input_csv_path,output_csv_path,field):
         return False
 
 def createimagehash(picture_path):
+    global rename_bad_image_files
     logging.info("Reading in " + picture_path)
 
     try:
@@ -169,10 +170,12 @@ def createimagehash(picture_path):
         return hash_value
     except Exception as e:
         logging.warning(picture_path + ' failed to generate image hash.  Error: ' + str(e))
+        if rename_bad_image_files == True:
+            prepend_text_to_filename(picture_path, 'bad_image_')
         return None
 
-
 def createaudiohash(filetohash):
+    global rename_bad_audio_files
     logging.info("Hashing " + filetohash)
     #while True:
     try:
@@ -182,10 +185,8 @@ def createaudiohash(filetohash):
         return hash
     except CouldntDecodeError as e:
         logging.error(f"Failed to decode audio file: {e}")
-        return None
     except IndexError as e:
         logging.error(f"Index out of range error: {e}")
-        return None
     except KeyboardInterrupt:
         # This block will be executed when Ctrl+C is pressed
         logging.info("Ctrl+C received. Exiting gracefully...")
@@ -193,7 +194,10 @@ def createaudiohash(filetohash):
         sys.exit(0)
     except Exception as e:
         logging.error("Could not create audio hash " +  str(e))
-        return None
+    
+    if rename_bad_audio_files = True:
+        prepend_text_to_filename(filetohash, 'bad_audiofile_')
+    return None
 
 def is_file_larger_than(file_path, size_limit):
     # Convert human-readable size to bytes
@@ -290,6 +294,7 @@ def get_disk_space():
         return None
     
 def extractor(path_to_zip_file, directory_to_extract):
+    global rename_bad_archive_files
     logging.info ("extracting files ...")
 
     result = check_disk_space_for_extraction(path_to_zip_file)
@@ -301,7 +306,8 @@ def extractor(path_to_zip_file, directory_to_extract):
         patoolib.extract_archive(path_to_zip_file, outdir=directory_to_extract)
     except Exception as e:
         logging.error(' FAILED to extract: ' + path_to_zip_file + ".  Error " + str(e))
-        prepend_text_to_filename(path_to_zip_file, 'bad_archive_')
+        if rename_bad_archive_files == True:
+            prepend_text_to_filename(path_to_zip_file, 'bad_archive_')
         return False
     return True
 
