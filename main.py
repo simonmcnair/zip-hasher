@@ -184,9 +184,7 @@ localoverridesfile = os.path.join(get_script_path(), "localoverridesfile_" + get
 log_file_path =  os.path.join(get_script_path(),get_script_name() + '.log')
 cache_file_path =  os.path.join(get_script_path(),get_script_name() + '.cache')
 maxarchive_size='1GB'
-rename_bad_archive_files = True
-rename_bad_audio_files = True
-rename_bad_image_files = True
+
 
 if __name__=='__main__':
     if len(sys.argv) > 1:

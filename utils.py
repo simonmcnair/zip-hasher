@@ -14,7 +14,9 @@ from PIL import Image
 from pydub import AudioSegment
 from pydub.exceptions import CouldntDecodeError
 
-
+rename_bad_archive_files = True
+rename_bad_audio_files = True
+rename_bad_image_files = True
 
 def setup_logging(log_file, log_level='debug'):
     # Configure logging
