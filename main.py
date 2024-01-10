@@ -236,5 +236,4 @@ if __name__=='__main__':
             print("No local overrides.")
 
         utils.setup_logging(log_file_path,errorlog_file_path, 'warning')
-        utils.logging.error("test")
         main()
