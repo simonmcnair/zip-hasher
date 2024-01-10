@@ -64,20 +64,15 @@ def main():
             try:
                 for row in csv_reader:
                     filename_array.append(row["filename"])
-                    #logger.debug("adding " + row["filename"] + " to array.")
+                    logger.debug("adding " + row["filename"] + " to array.")
             except Exception as e:
                 logger.error(' FAILED to read csv row  Error ' + str(e))
                 utils.sys.exit(1)
         array = True
-        logger.debug("The number of cache entries is " + str(len(filename_array)))
+        logger.info("CSV loaded.  The number of cache entries is " + str(len(filename_array)))
     else:
         logger.info("No csv file, create one.")
         utils.writecsvrow(cache_file_path,["filename","archive","type", "path to file if archive","hash"])
-
-       # with open(cache_file_path, mode='w', newline='', encoding='utf-8') as file:
-       #     writer = csv.writer(file,quoting=csv.QUOTE_ALL)
-       #     header = ["filename","archive","type", "path to file if archive","hash"]
-       #     writer.writerow(header) 
         array = False
 
 

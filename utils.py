@@ -28,7 +28,7 @@ def setup_logging(log_file, errorlog_path,log_level='debug'):
         print(f"Invalid log level: {log_level}. Defaulting to 'debug'.")
         log_level = 'debug'
 
-    console_log_level = log_level_map['debug']
+    console_log_level = log_level_map['info']
 
     try:
             logger = logging.getLogger()
