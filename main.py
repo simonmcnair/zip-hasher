@@ -36,6 +36,8 @@ def get_script_path():
 
 def main():
     """Main subroutine"""
+
+    utils.logging.info('Started ')
     utils.logging.info('path : ' + str(dirtoprocess))
     utils.logging.info('path : ' + str(csv_file_path))
     utils.logging.info('path : ' + str(log_file_path))
@@ -47,6 +49,7 @@ def main():
     utils.logging.info('supported archive extensions : ' + str(supported_archive_extensions))
     utils.logging.info('supported image extensions   : ' + str(supported_image_extensions))
     utils.logging.info('supported Audio extensions   : ' + str(supported_audio_extensions))
+    i =0
 
     if os.path.isfile(cache_file_path):
         utils.logging.info("csv file present")
@@ -83,7 +86,9 @@ def main():
                 if not dirs and not files:
                     utils.logging.info("empty directory: " + root)
                     continue
+                i += 1
 
+                print("processing #" + str(i))
                 hasher = []
                 extension = os.path.splitext(file_name)[1].lower()
                 full_file_path = os.path.join(root, file_name)
@@ -166,6 +171,7 @@ def main():
 
                     else:
                         utils.logging.error("no hash created for " + full_file_path)
+    utils.logging.info('hashing complete')
 
 
     with open(remainfile, 'w', encoding='utf-8', newline='') as log_file:
