@@ -38,6 +38,10 @@ def main():
     """Main subroutine"""
 
     logger.info('Started ')
+    #logger.debug("test debug")
+    #logger.info("test info")
+    #logger.warning("test warning")
+    #logger.error("test error")
     logger.info('path : ' + str(dirtoprocess))
     logger.info('path : ' + str(csv_file_path))
     logger.info('path : ' + str(log_file_path))
@@ -95,6 +99,7 @@ def main():
 
                 if array is True and full_file_path in filename_array:
                     logger.debug(f"file {full_file_path} is already in CSV.  Skipping and removing from array.  array size is " + str(len(filename_array)))
+
                     # Remove filename from the array
                     filename_array.remove(full_file_path)
                     continue

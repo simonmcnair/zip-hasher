@@ -17,48 +17,41 @@ from pydub.exceptions import CouldntDecodeError
 rename_bad_archive_files = True
 rename_bad_audio_files = True
 rename_bad_image_files = True
+logger = ''
 
 def setup_logging(log_file, errorlog_path,log_level='debug'):
 
     log_level_map = {'debug': logging.DEBUG, 'info': logging.INFO, 'warning': logging.WARNING,'error': logging.ERROR}
 
-    # Validate log_level parameter
     log_level = log_level.lower()
     if log_level not in log_level_map:
         print(f"Invalid log level: {log_level}. Defaulting to 'debug'.")
         log_level = 'debug'
 
-    console_log_level = 'debug'
+    console_log_level = log_level_map['debug']
 
     try:
-        #if logging.getLogger():
-        #    return logging.getLogger()
-        #else:
-            logger = logging.getLogger('main')
+            logger = logging.getLogger()
             if not logger.handlers:
-                logging.basicConfig(level=log_level_map[log_level], format='%(asctime)s - %(levelname)s - %(message)s')
-
-
                 # Create a handler and set the level to the lowest level you want to log
                 formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 
                 filehandler = logging.FileHandler(log_file)
-                filehandler.setLevel(log_level_map[log_level])
+                filehandler.setLevel(log_level_map[log_level])# file log level assigned elsewhere
                 filehandler.setFormatter(formatter)
                 logger.addHandler(filehandler)
-
 
                 error_handler = logging.FileHandler(errorlog_path)
                 error_handler.setLevel(log_level_map['error'])  # Only logs messages with ERROR level or higher
                 error_handler.setFormatter(formatter)
                 logger.addHandler(error_handler)
 
-
                 console_handler = logging.StreamHandler()
-                console_handler.setLevel(log_level_map[console_log_level])
+                console_handler.setLevel(console_log_level) # log debug to console
                 console_handler.setFormatter(formatter)
                 logger.addHandler(console_handler)
 
+                logger.setLevel(logging.DEBUG)
                 print("Handlers are set up.")
 
             else:
@@ -262,7 +255,7 @@ def prepend_text_to_filename(filepath, text_to_prepend):
 def writecsvrow(theoutputfile,contents):
 
     try:
-        with open(theoutputfile, mode='a', newline='') as file:
+        with open(theoutputfile, mode='a', newline='', encoding='utf-8') as file:
             writer = csv.writer(file,quoting=csv.QUOTE_ALL)
             writer.writerow(contents)
         file.close
