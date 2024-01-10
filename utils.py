@@ -29,7 +29,7 @@ def setup_logging(log_file, errorlog_path,log_level='debug'):
     elif log_level== 'warning':
         log_level=logging.WARNING
     
-    console_log_level = logging.WARNING
+    console_log_level = logging.DEBUG
 
     try:
         #if logging.getLogger():
