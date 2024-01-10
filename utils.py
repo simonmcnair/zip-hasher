@@ -45,19 +45,19 @@ def setup_logging(log_file, errorlog_path,log_level='debug'):
                 filehandler = logging.FileHandler(log_file)
                 filehandler.setLevel(log_level)
                 filehandler.setFormatter(formatter)
-                logging.getLogger().addHandler(filehandler)
+                logging.getLogger('main').addHandler(filehandler)
 
 
                 error_handler = logging.FileHandler(errorlog_path)
                 error_handler.setLevel(logging.ERROR)  # Only logs messages with ERROR level or higher
                 error_handler.setFormatter(formatter)
-                logging.getLogger().addHandler(error_handler)
+                logging.getLogger('main').addHandler(error_handler)
 
 
                 console_handler = logging.StreamHandler()
                 console_handler.setLevel(console_log_level)
                 console_handler.setFormatter(formatter)
-                logging.getLogger().addHandler(console_handler)
+                logging.getLogger('main').addHandler(console_handler)
 
             else:
                 print("Handlers are already setup")
