@@ -28,6 +28,8 @@ def setup_logging(log_file, errorlog_path,log_level='debug'):
         log_level=logging.INFO
     elif log_level== 'warning':
         log_level=logging.WARNING
+    
+    console_log_level = logging.WARNING
 
     try:
         #if logging.getLogger():
@@ -53,7 +55,7 @@ def setup_logging(log_file, errorlog_path,log_level='debug'):
 
 
                 console_handler = logging.StreamHandler()
-                console_handler.setLevel(logging.INFO)
+                console_handler.setLevel(console_log_level)
                 console_handler.setFormatter(formatter)
                 logging.getLogger('main').addHandler(console_handler)
 
