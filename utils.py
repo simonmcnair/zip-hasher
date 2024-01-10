@@ -20,7 +20,7 @@ rename_bad_image_files = True
 
 def setup_logging(log_file, errorlog_path,log_level='debug'):
 
-    log_level_map = {'debug': logging.DEBUG, 'info': logging.INFO, 'warning': logging.WARNING}
+    log_level_map = {'debug': logging.DEBUG, 'info': logging.INFO, 'warning': logging.WARNING,'error': logging.ERROR}
 
     # Validate log_level parameter
     log_level = log_level.lower()
@@ -28,8 +28,7 @@ def setup_logging(log_file, errorlog_path,log_level='debug'):
         print(f"Invalid log level: {log_level}. Defaulting to 'debug'.")
         log_level = 'debug'
 
-    
-    console_log_level = logging.DEBUG
+    console_log_level = 'debug'
 
     try:
         #if logging.getLogger():
@@ -44,21 +43,21 @@ def setup_logging(log_file, errorlog_path,log_level='debug'):
                 formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 
                 filehandler = logging.FileHandler(log_file)
-                filehandler.setLevel(log_level)
+                filehandler.setLevel(log_level_map[log_level])
                 filehandler.setFormatter(formatter)
-                logging.addHandler(filehandler)
+                logger.addHandler(filehandler)
 
 
                 error_handler = logging.FileHandler(errorlog_path)
-                error_handler.setLevel(logging.ERROR)  # Only logs messages with ERROR level or higher
+                error_handler.setLevel(log_level_map['error'])  # Only logs messages with ERROR level or higher
                 error_handler.setFormatter(formatter)
-                logging.addHandler(error_handler)
+                logger.addHandler(error_handler)
 
 
                 console_handler = logging.StreamHandler()
-                console_handler.setLevel(console_log_level)
+                console_handler.setLevel(log_level_map[console_log_level])
                 console_handler.setFormatter(formatter)
-                logging.addHandler(console_handler)
+                logger.addHandler(console_handler)
 
                 print("Handlers are set up.")
 

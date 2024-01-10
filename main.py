@@ -37,22 +37,22 @@ def get_script_path():
 def main():
     """Main subroutine"""
 
-    utils.logging.info('Started ')
-    utils.logging.info('path : ' + str(dirtoprocess))
-    utils.logging.info('path : ' + str(csv_file_path))
-    utils.logging.info('path : ' + str(log_file_path))
-    utils.logging.info('path : ' + str(remainfile))
-    utils.logging.info('path : ' + str(dirtoprocess ))
-    utils.logging.info('path : ' + str(sortedfilepath ))
-    utils.logging.info('path : ' + str(dupefilepath ))
+    logger.info('Started ')
+    logger.info('path : ' + str(dirtoprocess))
+    logger.info('path : ' + str(csv_file_path))
+    logger.info('path : ' + str(log_file_path))
+    logger.info('path : ' + str(remainfile))
+    logger.info('path : ' + str(dirtoprocess ))
+    logger.info('path : ' + str(sortedfilepath ))
+    logger.info('path : ' + str(dupefilepath ))
 
-    utils.logging.info('supported archive extensions : ' + str(supported_archive_extensions))
-    utils.logging.info('supported image extensions   : ' + str(supported_image_extensions))
-    utils.logging.info('supported Audio extensions   : ' + str(supported_audio_extensions))
+    logger.info('supported archive extensions : ' + str(supported_archive_extensions))
+    logger.info('supported image extensions   : ' + str(supported_image_extensions))
+    logger.info('supported Audio extensions   : ' + str(supported_audio_extensions))
     i =0
 
     if os.path.isfile(cache_file_path):
-        utils.logging.info("csv file present")
+        logger.info("csv file present")
         filename_array = []
 
         with open(cache_file_path, 'r', encoding='utf-8', newline='') as csv_file:
@@ -60,14 +60,14 @@ def main():
             try:
                 for row in csv_reader:
                     filename_array.append(row["filename"])
-                    utils.logging.debug("adding " + row["filename"] + " to array.")
+                    logger.debug("adding " + row["filename"] + " to array.")
             except Exception as e:
-                utils.logging.error(' FAILED to read csv row  Error ' + str(e))
+                logger.error(' FAILED to read csv row  Error ' + str(e))
                 utils.sys.exit(1)
         array = True
-        utils.logging.debug("The number of cache entries is " + str(len(filename_array)))
+        logger.debug("The number of cache entries is " + str(len(filename_array)))
     else:
-        utils.logging.info("No csv file, create one.")
+        logger.info("No csv file, create one.")
         utils.writecsvrow(cache_file_path,["filename","archive","type", "path to file if archive","hash"])
 
        # with open(cache_file_path, mode='w', newline='', encoding='utf-8') as file:
@@ -84,7 +84,7 @@ def main():
             for file_name in files:
 
                 if not dirs and not files:
-                    utils.logging.info("empty directory: " + root)
+                    logger.info("empty directory: " + root)
                     continue
                 i += 1
 
@@ -94,16 +94,16 @@ def main():
                 full_file_path = os.path.join(root, file_name)
 
                 if array is True and full_file_path in filename_array:
-                    utils.logging.debug(f"file {full_file_path} is already in CSV.  Skipping and removing from array.  array size is " + str(len(filename_array)))
+                    logger.debug(f"file {full_file_path} is already in CSV.  Skipping and removing from array.  array size is " + str(len(filename_array)))
                     # Remove filename from the array
                     filename_array.remove(full_file_path)
                     continue
                 else:
                     # Process the file (replace this with your processing logic)
-                    utils.logging.info(f"File not in CSV.  Processing file: {full_file_path}")
+                    logger.info(f"File not in CSV.  Processing file: {full_file_path}")
 
                     if os.path.normpath(full_file_path) == os.path.normpath(cache_file_path) or os.path.normpath(full_file_path) == os.path.normpath(log_file_path):
-                        utils.logging.info("not processing csv or log file" + full_file_path)
+                        logger.info("not processing csv or log file" + full_file_path)
                         continue
 
                     isarchive = 'False'
@@ -111,20 +111,20 @@ def main():
                     relativefilename = '-'
 
                     if extension in supported_archive_extensions:
-                        utils.logging.info("Processing archive : " + full_file_path)
+                        logger.info("Processing archive : " + full_file_path)
                         isarchive = 'True'
                         if utils.is_file_larger_than(full_file_path, maxarchive_size):
-                            utils.logging.warning("file "+ "full_file_path + is larger than " + str(maxarchive_size) + " so skip it")
+                            logger.warning("file "+ "full_file_path + is larger than " + str(maxarchive_size) + " so skip it")
                             continue
 
                         try:
                             with tempfile.TemporaryDirectory() as path_to_extract:
-                                utils.logging.info('created temporary directory' + path_to_extract)
+                                logger.info('created temporary directory' + path_to_extract)
                                 result = utils.extractor(full_file_path, path_to_extract)
                                 if result is not False:
                                     list_of_all_files = utils.getListOfFiles(path_to_extract)
                                     for path_to_file in list_of_all_files:
-                                        utils.logging.info("processing " + path_to_file)
+                                        logger.info("processing " + path_to_file)
                                         file_extension = os.path.splitext(path_to_file)[1].lower()
                                         relativefilename = utils.stripfilepath(path_to_file)
 
@@ -135,7 +135,7 @@ def main():
                                             hash = (utils.createaudiohash(path_to_file))
                                             filetype= 'audio'
                                         else:
-                                            utils.logging.info("unknown file just hash it. " + file_extension + " " + path_to_file)
+                                            logger.info("unknown file just hash it. " + file_extension + " " + path_to_file)
                                             hash = (utils.calculate_blake2b(path_to_file))
                                             filetype = 'other'
                                         if hash != False:
@@ -145,20 +145,20 @@ def main():
                                 else:
                                     hashret = False
                         except Exception as e:
-                            utils.logging.error("extraction FAILED.  Error " + str(e))
+                            logger.error("extraction FAILED.  Error " + str(e))
                             hashret = False
 
                     elif extension in supported_image_extensions:
-                        utils.logging.info("Processing image : " + full_file_path)
+                        logger.info("Processing image : " + full_file_path)
                         hashret = (utils.createimagehash(full_file_path))
                         filetype = 'image'
 
                     elif extension in supported_audio_extensions:
-                        utils.logging.info("Processing audio : " + full_file_path)
+                        logger.info("Processing audio : " + full_file_path)
                         hashret = (utils.createaudiohash(full_file_path))
                         filetype = 'audio'
                     else:
-                        utils.logging.info("Processing file : " + full_file_path)
+                        logger.info("Processing file : " + full_file_path)
                         hashret = (utils.calculate_blake2b(full_file_path))
                         filetype = 'other'
 
@@ -170,8 +170,8 @@ def main():
                             utils.writecsvrow(cache_file_path,[full_file_path,isarchive,filetype,relativefilename,hashret])
 
                     else:
-                        utils.logging.error("no hash created for " + full_file_path)
-    utils.logging.info('hashing complete')
+                        logger.error("no hash created for " + full_file_path)
+    logger.info('hashing complete')
 
 
     with open(remainfile, 'w', encoding='utf-8', newline='') as log_file:
@@ -184,9 +184,9 @@ def main():
     result = utils.sortcsv(sortedfilepath,sortedfilepath,'hash')
 
     if result is True :
-        utils.logging.info("Sort success")
+        logger.info("Sort success")
     else:
-        utils.logging.info("Sort failed")
+        logger.info("Sort failed")
 
 
 #processing_dir = os.path.dirname(os.path.abspath(__file__))
@@ -217,7 +217,7 @@ if __name__=='__main__':
         sortedfilepath = os.path.join(get_script_path(),  'sorted.csv')
         dupefilepath = os.path.join(get_script_path(),  'dupepath.csv')
 
-        utils.setup_logging(log_file_path, errorlog_file_path,  log_level='warning')
+        logger = utils.setup_logging(log_file_path, errorlog_file_path, log_level='warning')
         main()
     else:
 
@@ -235,5 +235,5 @@ if __name__=='__main__':
         else:
             print("No local overrides.")
 
-        utils.setup_logging(log_file_path,errorlog_file_path,  log_level='warning')
+        logger = utils.setup_logging(log_file_path,errorlog_file_path, log_level='warning')
         main()
