@@ -56,7 +56,7 @@ def main():
     i =0
 
     if os.path.isfile(cache_file_path):
-        logger.info("csv file present")
+        logger.info("csv file present.  Loading files in to array")
         filename_array = []
 
         with open(cache_file_path, 'r', encoding='utf-8', newline='') as csv_file:
@@ -113,8 +113,9 @@ def main():
                     if extension in supported_archive_extensions:
                         logger.info("Processing archive : " + full_file_path)
                         isarchive = 'True'
-                        if utils.is_file_larger_than(full_file_path, maxarchive_size):
-                            logger.warning("file "+ "full_file_path + is larger than " + str(maxarchive_size) + " so skip it")
+                        too_big, filesize = utils.is_file_larger_than(full_file_path, maxarchive_size)
+                        if too_big:
+                            logger.warning("file "+ full_file_path + "is larger than " + str(maxarchive_size) + " so skip it.. File size was " + str(filesize))
                             continue
 
                         try:

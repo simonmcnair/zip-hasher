@@ -223,7 +223,7 @@ def is_file_larger_than(file_path, size_limit):
         file_size = os.path.getsize(file_path)
 
         # Check if the file size is larger than the specified limit
-        return file_size > human_readable_to_bytes(size_limit)
+        return file_size > human_readable_to_bytes(size_limit) , file_size
     except Exception as e:
         print(f"Error: {e}")
         return False
