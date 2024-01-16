@@ -87,7 +87,8 @@ def main():
                     continue
                 i += 1
 
-                print("processing #" + str(i) + ".  Cache entries count is " + str(len(filename_array)))
+                if i % 10 == 0:
+                    print("processing #" + str(i) + ".  Cache entries count is " + str(len(filename_array)))
                 hasher = []
                 extension = os.path.splitext(file_name)[1].lower()
                 full_file_path = os.path.join(root, file_name)
