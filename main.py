@@ -87,13 +87,13 @@ def main():
                     continue
                 i += 1
 
-                print("processing #" + str(i))
+                print("processing #" + str(i) + ".  Cache entries count is " + str(len(filename_array)))
                 hasher = []
                 extension = os.path.splitext(file_name)[1].lower()
                 full_file_path = os.path.join(root, file_name)
 
                 if array is True and full_file_path in filename_array:
-                    logger.debug(f"file {full_file_path} is already in CSV.  Skipping and removing from array.  array size is " + str(len(filename_array)))
+                    #logger.debug(f"file {full_file_path} is already in CSV.  Skipping and removing from array.  array size is " + str(len(filename_array)))
 
                     # Remove filename from the array
                     filename_array.remove(full_file_path)
