@@ -94,7 +94,6 @@ def main():
 
                     if i % 10 == 0:
                         print("processing #" + str(i) + ".  Cache entries count is " + str(len(filename_array)))
-                    hasher = []
                     extension = os.path.splitext(file_name)[1].lower()
                     full_file_path = os.path.join(root, file_name)
 
@@ -130,6 +129,7 @@ def main():
                                     result = utils.extractor(full_file_path, path_to_extract)
                                     if result is not False:
                                         list_of_all_files = utils.getListOfFiles(path_to_extract)
+                                        hasher = []
                                         for path_to_file in list_of_all_files:
                                             logger.info("processing " + path_to_file)
                                             file_extension = os.path.splitext(path_to_file)[1].lower()
@@ -175,9 +175,9 @@ def main():
                                     utils.writecsvrow(cache_file_path,[each[0],each[1],each[2],each[3],each[4]])
                             else:
                                 utils.writecsvrow(cache_file_path,[full_file_path,isarchive,filetype,relativefilename,hashret])
-
                         else:
                             logger.error("no hash created for " + full_file_path)
+                            
         logger.info('hashing complete')
 
 

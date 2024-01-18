@@ -118,7 +118,8 @@ def remove_unique_hashes(inputfile,outputfile,field):
 
     # Filter lines with non-unique 'hash' values
     #filtered_lines = [lines[0] for lines in hash_lines.values() if len(lines) == 1]
-    filtered_lines = [line for lines in hash_lines.values() for line in lines if len(lines) > 1]
+    #filtered_lines = [line for lines in hash_lines.values() for line in lines if len(lines) > 1]
+    filtered_lines = [line for lines in hash_lines.values() if len(lines) > 1 for line in lines]
 
     # Write the filtered lines to the output CSV file
     with open(outputfile, 'w', newline='', encoding='utf-8') as csvfile:
@@ -181,7 +182,7 @@ def createimagehash(picture_path):
         logging.warning(picture_path + ' failed to generate image hash.  Error: ' + str(e))
         if rename_bad_image_files == True:
             prepend_text_to_filename(picture_path, 'bad_image_')
-        return None
+        return False
 
 def createaudiohash(filetohash):
     global rename_bad_audio_files
@@ -206,7 +207,7 @@ def createaudiohash(filetohash):
     
     if rename_bad_audio_files == True:
         prepend_text_to_filename(filetohash, 'bad_audiofile_')
-    return None
+    return False
 
 def is_file_larger_than(file_path, size_limit):
     # Convert human-readable size to bytes
