@@ -93,7 +93,7 @@ def remove_duplicates(input_file, output_file,columname):
         logging.info("more than 1 duplicate path in the file %s", str(len(duplicate_rows)))
         for line in duplicate_rows:
             original_row = unique_rows[line]
-            logging.info("removed %e as a duplicate of %f", str(line) , original_row)
+            logging.info(f"removed {line} as a duplicate of {original_row}")
     else:
         logging.info('no duplicate paths in file ' + input_file)
 
@@ -161,27 +161,27 @@ def sortcsv(input_csv_path,output_csv_path,field):
         return True
 
     except Exception as e:
-        logging.error('failed to sort CSV.  Error: %e', str(e))
+        logging.error(f'failed to sort CSV.  Error: {e}')
         return False
 
-def createimagehash(picture_path):
+def createimagehash(filetohash):
     global rename_bad_image_files
-    logging.info("Reading in " + picture_path)
+    logging.info("Reading in " + filetohash)
 
     try:
-        with Image.open(picture_path, formats=None) as image:
+        with Image.open(filetohash, formats=None) as image:
             # Get the image data as bytes
             image.load()
             image_bytes = image.tobytes()
         # Create a hash object and update with image bytes
         hash_object = hashlib.blake2b(image_bytes)
         hash_value = hash_object.hexdigest()
-        logging.info(hash_value + " is hash for " + picture_path)
+        logging.info(hash_value + " is hash for " + filetohash)
         return hash_value
     except Exception as e:
-        logging.warning(picture_path + ' failed to generate image hash.  Error: ' + str(e))
+        logging.warning("Could not create image hash for " + filetohash + " " +  str(e))
         if rename_bad_image_files == True:
-            prepend_text_to_filename(picture_path, 'bad_image_')
+            prepend_text_to_filename(filetohash, 'bad_image_')
         return False
 
 def createaudiohash(filetohash):
@@ -194,16 +194,16 @@ def createaudiohash(filetohash):
         logging.info(hash + " is hash for " + filetohash)
         return hash
     except CouldntDecodeError as e:
-        logging.error(f"Failed to decode audio file: {e}")
+        logging.error(f"Failed to decode audio file.{filetohash}: {e}")
     except IndexError as e:
-        logging.error(f"Index out of range error: {e}")
+        logging.error(f"Index out of range error.{filetohash}: {e}")
     except KeyboardInterrupt:
         # This block will be executed when Ctrl+C is pressed
         logging.info("Ctrl+C received. Exiting gracefully...")
         # Perform cleanup operations here, if needed
         sys.exit(0)
     except Exception as e:
-        logging.error("Could not create audio hash " +  str(e))
+        logging.warning(f"Could not create audio hash for {filetohash} : {e}")
     
     if rename_bad_audio_files == True:
         prepend_text_to_filename(filetohash, 'bad_audiofile_')
@@ -226,7 +226,7 @@ def is_file_larger_than(file_path, size_limit):
         # Check if the file size is larger than the specified limit
         return file_size > human_readable_to_bytes(size_limit) , file_size
     except Exception as e:
-        print(f"Error: {e}")
+        logging.error(f"Error: {e}")
         return False
     
 def sizeof_fmt(num, suffix="B"):
@@ -240,7 +240,7 @@ def prepend_text_to_filename(filepath, text_to_prepend):
     directory, filename = os.path.split(filepath)
     base_name, extension = os.path.splitext(filename)
     if base_name.startswith(text_to_prepend):
-        logging.info(filepath + " already begins with " + text_to_prepend)
+        logging.info(f"{filepath} already begins with {text_to_prepend}")
         return filepath
 
     new_base_name = f"{text_to_prepend}_{base_name}"
@@ -248,7 +248,7 @@ def prepend_text_to_filename(filepath, text_to_prepend):
     try:
         shutil.move(filepath,new_filepath)
     except Exception as e:
-        logging.error(' FAILED to move: ' + filepath + " to " + new_filepath + ".  Error " + str(e))
+        logging.error(f"FAILED to move: {filepath} to {new_filepath} .  Error {e}")
         return
 
     return new_filepath
@@ -262,7 +262,7 @@ def writecsvrow(theoutputfile,contents):
         file.close
         del file
     except Exception as e:
-        logging.error(' FAILED to insert csv row  Error ' + str(e))
+        logging.error(f'FAILED to insert csv row  Error {e}')
         return False
     return True
 
@@ -277,13 +277,13 @@ def check_disk_space_for_extraction(archive_path, destination_path='.'):
 
         # Check if there is enough disk space
         if disk_space >= archive_size:
-            print("There is enough disk space to extract the archive.")
+            logging.error("There is enough disk space to extract the archive.")
             return True
         else:
-            print("Insufficient disk space to extract the archive.")
+            logging.error("Insufficient disk space to extract the archive.")
             return False
     except Exception as e:
-        print(f"Error: {e}")
+        logging.error(f"Error: {e}")
         return False
 
 def get_expanded_size(archive_path):
@@ -291,7 +291,7 @@ def get_expanded_size(archive_path):
         size = patoolib.get_archive_size(archive_path)
         return size
     except Exception as e:
-        print(f"Error: {e}")
+        logging.error(f"Error: {e}")
         return None
 
 def get_disk_space():
@@ -300,7 +300,7 @@ def get_disk_space():
         free_space = disk.free
         return free_space
     except Exception as e:
-        print(f"Error: {e}")
+        logging.error(f"Error: {e}")
         return None
     
 def extractor(path_to_zip_file, directory_to_extract):
@@ -309,13 +309,13 @@ def extractor(path_to_zip_file, directory_to_extract):
 
     result = check_disk_space_for_extraction(path_to_zip_file)
     if result == False:
-        logging.error(' FAILED to extract: ' + path_to_zip_file + ".  Insufficient space to extract archive")
+        logging.error(f'FAILED to extract: {path_to_zip_file}.  Insufficient space to extract archive')
         return False
 
     try:
         patoolib.extract_archive(path_to_zip_file, outdir=directory_to_extract)
     except Exception as e:
-        logging.error(' FAILED to extract: ' + path_to_zip_file + ".  Error " + str(e))
+        logging.error(f'FAILED to extract: {path_to_zip_file}.  {e}')
         if rename_bad_archive_files == True:
             prepend_text_to_filename(path_to_zip_file, 'bad_archive_')
         return False
@@ -353,7 +353,7 @@ def calculate_blake2b(file_path, block_size=65536):
         return result
 
     except Exception as e:
-        logging.error("failed to calculate hash " + str(e))
+        logging.error(f"failed to calculate hash for {file_path}: {e}")
         return False
 
     # Return the hexadecimal digest of the hash

@@ -94,7 +94,7 @@ def main():
                     i += 1
 
                     if i % 10 == 0:
-                        print("processing #" + str(i) + ".  Cache entries count is " + str(len(filename_array)))
+                        logger.info("processing #" + str(i) + ".  Cache entries count is " + str(len(filename_array)))
                     extension = os.path.splitext(file_name)[1].lower()
                     full_file_path = os.path.join(root, file_name)
 
@@ -118,7 +118,7 @@ def main():
                         hashret = False
                         relativefilename = '-'
                         hasher = []
-                        
+
                         if extension in supported_archive_extensions:
                             logger.info("Processing archive : " + full_file_path)
                             isarchive = 'True'
