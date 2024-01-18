@@ -55,7 +55,7 @@ def main():
     logger.info('supported Audio extensions   : ' + str(supported_audio_extensions))
     i =0
     process_files = False
-    remove_duplicate_filepaths = False
+    remove_duplicate_filepaths = True
     remove_unique_hashes = True
     sort_result = True
 
