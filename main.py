@@ -117,7 +117,8 @@ def main():
                         isarchive = 'False'
                         hashret = False
                         relativefilename = '-'
-
+                        hasher = []
+                        
                         if extension in supported_archive_extensions:
                             logger.info("Processing archive : " + full_file_path)
                             isarchive = 'True'
@@ -131,7 +132,7 @@ def main():
                                     result = utils.extractor(full_file_path, path_to_extract)
                                     if result is not False:
                                         list_of_all_files = utils.getListOfFiles(path_to_extract)
-                                        hasher = []
+                                        
                                         for path_to_file in list_of_all_files:
                                             logger.info("processing " + path_to_file)
                                             file_extension = os.path.splitext(path_to_file)[1].lower()
