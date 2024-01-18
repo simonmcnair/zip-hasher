@@ -54,141 +54,147 @@ def main():
     logger.info('supported image extensions   : ' + str(supported_image_extensions))
     logger.info('supported Audio extensions   : ' + str(supported_audio_extensions))
     i =0
+    process_files = False
+    remove_duplicate_filepaths = False
+    remove_unique_hashes = True
+    sort_result = True
 
-    if os.path.isfile(cache_file_path):
-        logger.info("csv file present.  Loading files in to array")
-        filename_array = []
+    if process_files == True:
+        if os.path.isfile(cache_file_path):
+            logger.info("csv file present.  Loading files in to array")
+            filename_array = []
 
-        with open(cache_file_path, 'r', encoding='utf-8', newline='') as csv_file:
-            csv_reader = csv.DictReader(csv_file)
-            try:
-                for row in csv_reader:
-                    filename_array.append(row["filename"])
-                    logger.debug("adding " + row["filename"] + " to array.")
-            except Exception as e:
-                logger.error(' FAILED to read csv row  Error ' + str(e))
-                utils.sys.exit(1)
-        array = True
-        logger.info("CSV loaded.  The number of cache entries is " + str(len(filename_array)))
-    else:
-        logger.info("No csv file, create one.")
-        utils.writecsvrow(cache_file_path,["filename","archive","type", "path to file if archive","hash"])
-        array = False
+            with open(cache_file_path, 'r', encoding='utf-8', newline='') as csv_file:
+                csv_reader = csv.DictReader(csv_file)
+                try:
+                    for row in csv_reader:
+                        filename_array.append(row["filename"])
+                        logger.debug("adding " + row["filename"] + " to array.")
+                except Exception as e:
+                    logger.error(' FAILED to read csv row  Error ' + str(e))
+                    utils.sys.exit(1)
+            array = True
+            logger.info("CSV loaded.  The number of cache entries is " + str(len(filename_array)))
+        else:
+            logger.info("No csv file, create one.")
+            utils.writecsvrow(cache_file_path,["filename","archive","type", "path to file if archive","hash"])
+            array = False
 
 
-    if os.path.exists(dirtoprocess):
+        if os.path.exists(dirtoprocess):
 
-        for root, dirs, files in os.walk(dirtoprocess):
+            for root, dirs, files in os.walk(dirtoprocess):
 
-            for file_name in files:
+                for file_name in files:
 
-                if not dirs and not files:
-                    logger.info("empty directory: " + root)
-                    continue
-                i += 1
-
-                if i % 10 == 0:
-                    print("processing #" + str(i) + ".  Cache entries count is " + str(len(filename_array)))
-                hasher = []
-                extension = os.path.splitext(file_name)[1].lower()
-                full_file_path = os.path.join(root, file_name)
-
-                if array is True and full_file_path in filename_array:
-                    #logger.debug(f"file {full_file_path} is already in CSV.  Skipping and removing from array.  array size is " + str(len(filename_array)))
-
-                    # Remove filename from the array
-                    filename_array.remove(full_file_path)
-                    continue
-                else:
-                    # Process the file (replace this with your processing logic)
-                    logger.info(f"File not in CSV.  Processing file: {full_file_path}")
-
-                    if os.path.normpath(full_file_path) == os.path.normpath(cache_file_path) or os.path.normpath(full_file_path) == os.path.normpath(log_file_path):
-                        logger.info("not processing csv or log file" + full_file_path)
+                    if not dirs and not files:
+                        logger.info("empty directory: " + root)
                         continue
+                    i += 1
 
-                    isarchive = 'False'
-                    hashret = False
-                    relativefilename = '-'
+                    if i % 10 == 0:
+                        print("processing #" + str(i) + ".  Cache entries count is " + str(len(filename_array)))
+                    hasher = []
+                    extension = os.path.splitext(file_name)[1].lower()
+                    full_file_path = os.path.join(root, file_name)
 
-                    if extension in supported_archive_extensions:
-                        logger.info("Processing archive : " + full_file_path)
-                        isarchive = 'True'
-                        too_big, filesize = utils.is_file_larger_than(full_file_path, maxarchive_size)
-                        if too_big:
-                            logger.warning("file "+ full_file_path + "is larger than " + str(maxarchive_size) + " so skip it.. File size was " + str(filesize))
+                    if array is True and full_file_path in filename_array:
+                        #logger.debug(f"file {full_file_path} is already in CSV.  Skipping and removing from array.  array size is " + str(len(filename_array)))
+
+                        # Remove filename from the array
+                        filename_array.remove(full_file_path)
+                        continue
+                    else:
+                        # Process the file (replace this with your processing logic)
+                        logger.info(f"File not in CSV.  Processing file: {full_file_path}")
+
+                        if os.path.normpath(full_file_path) == os.path.normpath(cache_file_path) or os.path.normpath(full_file_path) == os.path.normpath(log_file_path):
+                            logger.info("not processing csv or log file" + full_file_path)
                             continue
 
-                        try:
-                            with tempfile.TemporaryDirectory() as path_to_extract:
-                                logger.info('created temporary directory' + path_to_extract)
-                                result = utils.extractor(full_file_path, path_to_extract)
-                                if result is not False:
-                                    list_of_all_files = utils.getListOfFiles(path_to_extract)
-                                    for path_to_file in list_of_all_files:
-                                        logger.info("processing " + path_to_file)
-                                        file_extension = os.path.splitext(path_to_file)[1].lower()
-                                        relativefilename = utils.stripfilepath(path_to_file)
+                        isarchive = 'False'
+                        hashret = False
+                        relativefilename = '-'
 
-                                        if file_extension in supported_image_extensions:
-                                            hash = (utils.createimagehash(path_to_file))
-                                            filetype = 'image'
-                                        elif file_extension in supported_audio_extensions:
-                                            hash = (utils.createaudiohash(path_to_file))
-                                            filetype= 'audio'
-                                        else:
-                                            logger.info("unknown file just hash it. " + file_extension + " " + path_to_file)
-                                            hash = (utils.calculate_blake2b(path_to_file))
-                                            filetype = 'other'
-                                        if hash != False:
-                                            deets = [full_file_path,isarchive,filetype,relativefilename,hash]
-                                            hasher.append (deets)
-                                    hashret = True
-                                else:
-                                    hashret = False
-                        except Exception as e:
-                            logger.error("extraction FAILED.  Error " + str(e))
-                            hashret = False
+                        if extension in supported_archive_extensions:
+                            logger.info("Processing archive : " + full_file_path)
+                            isarchive = 'True'
+                            too_big, filesize = utils.is_file_larger_than(full_file_path, maxarchive_size)
+                            if too_big:
+                                logger.warning("file "+ full_file_path + "is larger than " + str(maxarchive_size) + " so skip it.. File size was " + str(filesize))
+                                continue
 
-                    elif extension in supported_image_extensions:
-                        logger.info("Processing image : " + full_file_path)
-                        hashret = (utils.createimagehash(full_file_path))
-                        filetype = 'image'
+                            try:
+                                with tempfile.TemporaryDirectory() as path_to_extract:
+                                    logger.info('created temporary directory' + path_to_extract)
+                                    result = utils.extractor(full_file_path, path_to_extract)
+                                    if result is not False:
+                                        list_of_all_files = utils.getListOfFiles(path_to_extract)
+                                        for path_to_file in list_of_all_files:
+                                            logger.info("processing " + path_to_file)
+                                            file_extension = os.path.splitext(path_to_file)[1].lower()
+                                            relativefilename = utils.stripfilepath(path_to_file)
 
-                    elif extension in supported_audio_extensions:
-                        logger.info("Processing audio : " + full_file_path)
-                        hashret = (utils.createaudiohash(full_file_path))
-                        filetype = 'audio'
-                    else:
-                        logger.info("Processing file : " + full_file_path)
-                        hashret = (utils.calculate_blake2b(full_file_path))
-                        filetype = 'other'
+                                            if file_extension in supported_image_extensions:
+                                                hash = (utils.createimagehash(path_to_file))
+                                                filetype = 'image'
+                                            elif file_extension in supported_audio_extensions:
+                                                hash = (utils.createaudiohash(path_to_file))
+                                                filetype= 'audio'
+                                            else:
+                                                logger.info("unknown file just hash it. " + file_extension + " " + path_to_file)
+                                                hash = (utils.calculate_blake2b(path_to_file))
+                                                filetype = 'other'
+                                            if hash != False:
+                                                deets = [full_file_path,isarchive,filetype,relativefilename,hash]
+                                                hasher.append (deets)
+                                        hashret = True
+                                    else:
+                                        hashret = False
+                            except Exception as e:
+                                logger.error("extraction FAILED.  Error " + str(e))
+                                hashret = False
 
-                    if hashret != False:
-                        if len(hasher) >0:
-                            for each in hasher:
-                                utils.writecsvrow(cache_file_path,[each[0],each[1],each[2],each[3],each[4]])
+                        elif extension in supported_image_extensions:
+                            logger.info("Processing image : " + full_file_path)
+                            hashret = (utils.createimagehash(full_file_path))
+                            filetype = 'image'
+
+                        elif extension in supported_audio_extensions:
+                            logger.info("Processing audio : " + full_file_path)
+                            hashret = (utils.createaudiohash(full_file_path))
+                            filetype = 'audio'
                         else:
-                            utils.writecsvrow(cache_file_path,[full_file_path,isarchive,filetype,relativefilename,hashret])
+                            logger.info("Processing file : " + full_file_path)
+                            hashret = (utils.calculate_blake2b(full_file_path))
+                            filetype = 'other'
 
-                    else:
-                        logger.error("no hash created for " + full_file_path)
-    logger.info('hashing complete')
+                        if hashret != False:
+                            if len(hasher) >0:
+                                for each in hasher:
+                                    utils.writecsvrow(cache_file_path,[each[0],each[1],each[2],each[3],each[4]])
+                            else:
+                                utils.writecsvrow(cache_file_path,[full_file_path,isarchive,filetype,relativefilename,hashret])
+
+                        else:
+                            logger.error("no hash created for " + full_file_path)
+        logger.info('hashing complete')
 
 
-    with open(remainfile, 'w', encoding='utf-8', newline='') as log_file:
-        for remaining_file in filename_array:
-            log_file.write(f"Unprocessed file: {remaining_file}\n")
+        with open(remainfile, 'w', encoding='utf-8', newline='') as log_file:
+            for remaining_file in filename_array:
+                log_file.write(f"Unprocessed file: {remaining_file}\n")
 
-
-    utils.remove_duplicates(cache_file_path,dupefilepath,'filename')
-    utils.remove_unique_hashes(dupefilepath,sortedfilepath,'hash')
-    result = utils.sortcsv(sortedfilepath,sortedfilepath,'hash')
-
-    if result is True :
-        logger.info("Sort success")
-    else:
-        logger.info("Sort failed")
+    if remove_duplicate_filepaths == True:
+        utils.remove_duplicates(cache_file_path,dupefilepath,'filename') # cater for multiple runs on the cache file, remove any dupe files as they point to the same place
+    if remove_unique_hashes == True:
+        utils.remove_unique_hashes(dupefilepath,sortedfilepath,'hash') # leaving only dupes
+    if sort_result == True:
+        result = utils.sortcsv(sortedfilepath,sortedfilepath,'hash')
+        if result is True :
+            logger.info("Sort success")
+        else:
+            logger.info("Sort failed")
 
 
 #processing_dir = os.path.dirname(os.path.abspath(__file__))
