@@ -55,7 +55,7 @@ def main():
     logger.info('supported image extensions   : ' + str(supported_image_extensions))
     logger.info('supported Audio extensions   : ' + str(supported_audio_extensions))
     i =0
-    process_files = False
+    process_files = True
     remove_duplicate_filepaths = True
     remove_unique_hashes = True
     sort_result = True
@@ -125,7 +125,6 @@ def main():
                             if too_big:
                                 logger.warning("file "+ full_file_path + "is larger than " + str(maxarchive_size) + " so skip it.. File size was " + str(filesize))
                                 continue
-
                             try:
                                 with tempfile.TemporaryDirectory() as path_to_extract:
                                     logger.info('created temporary directory' + path_to_extract)
