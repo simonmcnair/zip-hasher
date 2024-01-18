@@ -16,7 +16,8 @@ from pathlib import Path
 
 
 exts = Image.registered_extensions()
-supported_image_extensions = {ex for ex, f in exts.items() if f in Image.OPEN}
+#supported_image_extensions = {ex for ex, f in exts.items() if f in Image.OPEN}
+supported_image_extensions = ['.jpg','.png','.tif','.gif','.jpeg','.webp','.tiff','.bmp']
 supported_archive_extensions = ['.rar','.cbr','.zip','.cbz','.7z','.7zip']
 supported_audio_extensions = ['.mp3','.flac']
 
@@ -101,7 +102,9 @@ def main():
                         #logger.debug(f"file {full_file_path} is already in CSV.  Skipping and removing from array.  array size is " + str(len(filename_array)))
 
                         # Remove filename from the array
-                        filename_array.remove(full_file_path)
+                        #filename_array.remove(full_file_path)
+                        #remove ALL instances of filename from array, as multiple lines/entries will appear for zip files
+                        filename_array = [item for item in filename_array if item != full_file_path]
                         continue
                     else:
                         # Process the file (replace this with your processing logic)
@@ -177,13 +180,13 @@ def main():
                                 utils.writecsvrow(cache_file_path,[full_file_path,isarchive,filetype,relativefilename,hashret])
                         else:
                             logger.error("no hash created for " + full_file_path)
-                            
+
         logger.info('hashing complete')
 
 
         with open(remainfile, 'w', encoding='utf-8', newline='') as log_file:
             for remaining_file in filename_array:
-                log_file.write(f"Unprocessed file: {remaining_file}\n")
+                log_file.write(f"This file contains the files that were in the cache but were unmatched on the filesystem.  i.e. deleted.: {remaining_file}\n")
 
     if remove_duplicate_filepaths == True:
         utils.remove_duplicates(cache_file_path,dupefilepath,'filename') # cater for multiple runs on the cache file, remove any dupe files as they point to the same place
