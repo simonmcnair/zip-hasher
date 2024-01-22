@@ -63,10 +63,10 @@ def main():
     logger.info('supported image extensions   : ' + str(supported_image_extensions))
     logger.info('supported Audio extensions   : ' + str(supported_audio_extensions))
     i =0
-    process_files = False
-    remove_duplicate_filepaths = False
-    remove_unique_hashes = False
-    sort_result = False
+    process_files = True
+    remove_duplicate_filepaths = True
+    remove_unique_hashes = True
+    sort_result = True
     seperate_by_type= True
 
     if process_files == True:
@@ -102,8 +102,10 @@ def main():
                         continue
                     i += 1
 
-                    if i % 10 == 0:
+                    if i % 10 == 0 and array is True:
                         logger.info("processing #" + str(i) + ".  Cache entries count is " + str(len(filename_array)))
+                    else:
+                        logger.info("processing #" + str(i))
                     extension = os.path.splitext(file_name)[1].lower()
                     full_file_path = os.path.join(root, file_name)
 
@@ -194,8 +196,9 @@ def main():
 
 
         with open(remainfile, 'w', encoding='utf-8', newline='') as log_file:
-            for remaining_file in filename_array:
-                log_file.write(f"This file contains the files that were in the cache but were unmatched on the filesystem.  i.e. deleted.: {remaining_file}\n")
+            if len(filename_array) > 0:
+                for remaining_file in filename_array:
+                    log_file.write(f"This file contains the files that were in the cache but were unmatched on the filesystem.  i.e. deleted.: {remaining_file}\n")
 
     if remove_duplicate_filepaths == True:
         utils.remove_duplicates(cache_file_path,dupefilepath,'filename') # cater for multiple runs on the cache file, remove any dupe files as they point to the same place
