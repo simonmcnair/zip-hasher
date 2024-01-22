@@ -75,7 +75,7 @@ def main():
             filename_array = []
 
             with open(cache_file_path, 'r', encoding='utf-8', newline='') as csv_file:
-                csv_reader = csv.DictReader(csv_file, quoting=csv.QUOTE_STRINGS)
+                csv_reader = csv.DictReader(csv_file, quoting=csv.QUOTE_NONNUMERIC)
                 try:
                     for row in csv_reader:
                         filename_array.append(row["filename"])
