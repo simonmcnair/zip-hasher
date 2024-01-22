@@ -113,12 +113,11 @@ def extract_field(source_file, dest_file, fieldtocheck,field_name):
                 print(f"Field '{fieldtocheck}' not found in the source file.")
                 return
 #type
-            writer = csv.DictWriter(dest_csv, fieldnames=[fieldtocheck], quoting=csv.QUOTE_NONNUMERIC)
+            writer = csv.DictWriter(dest_csv, fieldnames=fieldnames, quoting=csv.QUOTE_NONNUMERIC)
             writer.writeheader()
 
             for row in reader:
-
-                if fieldtocheck == field_name:
+                if row[fieldtocheck] == field_name:
                     writer.writerow(row)
 
             print(f"Extraction complete. Data saved to {dest_file}")
