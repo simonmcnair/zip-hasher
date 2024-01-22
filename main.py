@@ -38,6 +38,14 @@ def get_script_path():
 def main():
     """Main subroutine"""
 
+    cache_file_path = os.path.join(get_script_path(),   'cache.csv')
+    sortedfilepath = os.path.join(get_script_path(),  'sorted.csv')
+    dupefilepath = os.path.join(get_script_path(),  'dupepath.csv')
+
+    imagefilepath = os.path.join(get_script_path(),  'imagepath.csv')
+    audiofilepath = os.path.join(get_script_path(),  'audiopath.csv')
+    otherfilepath = os.path.join(get_script_path(),  'otherpath.csv')
+
     logger.info('Started ')
     #logger.debug("test debug")
     #logger.info("test info")
@@ -55,10 +63,11 @@ def main():
     logger.info('supported image extensions   : ' + str(supported_image_extensions))
     logger.info('supported Audio extensions   : ' + str(supported_audio_extensions))
     i =0
-    process_files = True
-    remove_duplicate_filepaths = True
-    remove_unique_hashes = True
-    sort_result = True
+    process_files = False
+    remove_duplicate_filepaths = False
+    remove_unique_hashes = False
+    sort_result = False
+    seperate_by_type= True
 
     if process_files == True:
         if os.path.isfile(cache_file_path):
@@ -192,13 +201,18 @@ def main():
         utils.remove_duplicates(cache_file_path,dupefilepath,'filename') # cater for multiple runs on the cache file, remove any dupe files as they point to the same place
     if remove_unique_hashes == True:
         utils.remove_unique_hashes(dupefilepath,sortedfilepath,'hash') # leaving only dupes
+
     if sort_result == True:
         result = utils.sortcsv(sortedfilepath,sortedfilepath,'hash')
         if result is True :
             logger.info("Sort success")
         else:
             logger.info("Sort failed")
-
+    
+    if seperate_by_type == True:
+        utils.extract_field(sortedfilepath,imagefilepath,'image')
+        utils.extract_field(sortedfilepath,audiofilepath,'audio')
+        utils.extract_field(sortedfilepath,otherfilepath,'other')
 
 #processing_dir = os.path.dirname(os.path.abspath(__file__))
 localoverridesfile = os.path.join(get_script_path(), "localoverridesfile_" + get_script_name() + '.py')
@@ -224,9 +238,6 @@ if __name__=='__main__':
         csv_file_path = os.path.normpath(args.outputcsv)
         #log_file_path = os.path.normpath(args.logfile)
         remainfile = os.path.normpath(args.remainfile)
-        cache_file_path = os.path.join(get_script_path(),   'cache.csv')
-        sortedfilepath = os.path.join(get_script_path(),  'sorted.csv')
-        dupefilepath = os.path.join(get_script_path(),  'dupepath.csv')
 
         logger = utils.setup_logging(log_file_path, errorlog_file_path, log_level='warning')
         main()
@@ -234,10 +245,7 @@ if __name__=='__main__':
 
         dirtoprocess = "/folder/to/index"
         csv_file_path = os.path.join(get_script_path(),   'output.csv')
-        cache_file_path = os.path.join(get_script_path(),   'cache.csv')
         remainfile = os.path.join(get_script_path(),   'remainfile.log')
-        sortedfilepath = os.path.join(get_script_path(),  'sorted.csv')
-        dupefilepath = os.path.join(get_script_path(),  'dupepath.csv')
 
         if os.path.exists(localoverridesfile):
             exec(open(localoverridesfile).read())
