@@ -72,7 +72,7 @@ def remove_duplicates(input_file, output_file,columname):
     logging.info(" remove_duplicates")
 
     with open(input_file, 'r', encoding='utf-8') as infile:
-        reader = csv.DictReader(infile, quoting=csv.QUOTE_STRINGS)
+        reader = csv.DictReader(infile, quoting=csv.QUOTE_NONNUMERIC)
         for row in reader:
             filename = row[columname]
             if filename not in seen_filenames:
@@ -85,7 +85,7 @@ def remove_duplicates(input_file, output_file,columname):
     # Write the unique rows back to a new CSV file
     fieldnames = unique_rows[list(unique_rows.keys())[0]].keys() if unique_rows else []
     with open(output_file, 'w', newline='', encoding='utf-8') as outfile:
-        writer = csv.DictWriter(outfile, fieldnames=fieldnames, quoting=csv.QUOTE_STRINGS)
+        writer = csv.DictWriter(outfile, fieldnames=fieldnames, quoting=csv.QUOTE_NONNUMERIC)
         writer.writeheader()
         writer.writerows(unique_rows.values())
 
@@ -104,14 +104,14 @@ def remove_duplicates(input_file, output_file,columname):
 def extract_field(source_file, dest_file, field_name):
     try:
         with open(source_file, 'r') as source_csv, open(dest_file, 'w', newline='', encoding='utf-8') as dest_csv:
-            reader = csv.DictReader(source_csv, quoting=csv.QUOTE_STRINGS)
+            reader = csv.DictReader(source_csv, quoting=csv.QUOTE_NONNUMERIC)
             fieldnames = reader.fieldnames
 
             if field_name not in fieldnames:
                 print(f"Field '{field_name}' not found in the source file.")
                 return
 
-            writer = csv.DictWriter(dest_csv, fieldnames=[field_name], encoding='utf-8', quoting=csv.QUOTE_STRINGS)
+            writer = csv.DictWriter(dest_csv, fieldnames=[field_name], encoding='utf-8', quoting=csv.QUOTE_NONNUMERIC)
             writer.writeheader()
 
             for row in reader:
@@ -135,7 +135,7 @@ def remove_unique_hashes(inputfile,outputfile,field):
 
     # Read the CSV file and store lines with unique 'hash' values
     with open(inputfile, 'r', encoding='utf-8') as csvfile:
-        reader = csv.DictReader(csvfile, quoting=csv.QUOTE_STRINGS)
+        reader = csv.DictReader(csvfile, quoting=csv.QUOTE_NONNUMERIC)
         fieldnames = reader.fieldnames  # Capture fieldnames inside the 'with' block
         for row in reader:
             hash_lines[row[field]].append(row)
@@ -148,7 +148,7 @@ def remove_unique_hashes(inputfile,outputfile,field):
     # Write the filtered lines to the output CSV file
     with open(outputfile, 'w', newline='', encoding='utf-8') as csvfile:
         fieldnames = reader.fieldnames
-        writer = csv.DictWriter(csvfile, fieldnames=fieldnames, quoting=csv.QUOTE_STRINGS)
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames, quoting=csv.QUOTE_NONNUMERIC)
         writer.writeheader()
         writer.writerows(filtered_lines)
 
@@ -164,7 +164,7 @@ def sortcsv(input_csv_path,output_csv_path,field):
     try:
             # Read the CSV file into a list of dictionaries
         with open(input_csv_path, 'r', newline='', encoding='utf-8') as csvfile:
-            reader = csv.DictReader(csvfile, quoting=csv.QUOTE_STRINGS)
+            reader = csv.DictReader(csvfile, quoting=csv.QUOTE_NONNUMERIC)
             data = list(reader)
 
         # Sort the data based on the 'field' field
@@ -173,7 +173,7 @@ def sortcsv(input_csv_path,output_csv_path,field):
         # Write the sorted data back to a new CSV file
         with open(output_csv_path, 'w', newline='', encoding='utf-8') as csvfile:
             fieldnames = reader.fieldnames
-            writer = csv.DictWriter(csvfile, fieldnames=fieldnames, quoting=csv.QUOTE_STRINGS)
+            writer = csv.DictWriter(csvfile, fieldnames=fieldnames, quoting=csv.QUOTE_NONNUMERIC)
 
             # Write the header
             writer.writeheader()
@@ -281,7 +281,7 @@ def writecsvrow(theoutputfile,contents):
 
     try:
         with open(theoutputfile, mode='a', newline='', encoding='utf-8') as file:
-            writer = csv.writer(file, quoting=csv.QUOTE_STRINGS)
+            writer = csv.writer(file, quoting=csv.QUOTE_NONNUMERIC)
             writer.writerow(contents)
         file.close
         del file
