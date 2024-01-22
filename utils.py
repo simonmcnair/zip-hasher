@@ -102,24 +102,25 @@ def remove_duplicates(input_file, output_file,columname):
     #for row in duplicate_rows:
     #    logging.info(f"Removed {row} as a duplicate of {row[column_name]}")
 
-def extract_field(source_file, dest_file, field_name):
+def extract_field(source_file, dest_file, fieldtochecck,field_name):
     try:
         with open(source_file, 'r') as source_csv, open(dest_file, 'w', newline='', encoding='utf-8') as dest_csv:
 #            reader = csv.DictReader(source_csv, quoting=csv.QUOTE_NONNUMERIC)
             reader = csv.DictReader(source_csv)
             fieldnames = reader.fieldnames
 
-            if field_name not in fieldnames:
-                print(f"Field '{field_name}' not found in the source file.")
-                return
-
+            #if field_name not in fieldnames:
+            #    print(f"Field '{field_name}' not found in the source file.")
+            #    return
+#type
             #writer = csv.DictWriter(dest_csv, fieldnames=[field_name], encoding='utf-8', quoting=csv.QUOTE_NONNUMERIC)
-            writer = csv.DictWriter(dest_csv, fieldnames=[field_name], encoding='utf-8', quoting=csv.QUOTE_NONNUMERIC)
+            writer = csv.DictWriter(dest_csv, fieldnames=[fieldtochecck], encoding='utf-8', quoting=csv.QUOTE_NONNUMERIC)
             writer.writeheader()
 
             for row in reader:
-                extracted_data = {field_name: row[field_name]}
-                writer.writerow(extracted_data)
+                extracted_data = {fieldtochecck: row[fieldtochecck]}
+                if extracted_data == field_name:
+                    writer.writerow(extracted_data)
 
             print(f"Extraction complete. Data saved to {dest_file}")
 

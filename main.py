@@ -210,9 +210,9 @@ def main():
             logger.info("Sort failed")
     
     if seperate_by_type == True:
-        utils.extract_field(sortedfilepath,imagefilepath,'image')
-        utils.extract_field(sortedfilepath,audiofilepath,'audio')
-        utils.extract_field(sortedfilepath,otherfilepath,'other')
+        utils.extract_field(sortedfilepath,imagefilepath,'type','image')
+        utils.extract_field(sortedfilepath,audiofilepath,'type','audio')
+        utils.extract_field(sortedfilepath,otherfilepath,'type','other')
 
 #processing_dir = os.path.dirname(os.path.abspath(__file__))
 localoverridesfile = os.path.join(get_script_path(), "localoverridesfile_" + get_script_name() + '.py')
