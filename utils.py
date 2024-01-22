@@ -106,13 +106,14 @@ def extract_field(source_file, dest_file, field_name):
     try:
         with open(source_file, 'r') as source_csv, open(dest_file, 'w', newline='', encoding='utf-8') as dest_csv:
 #            reader = csv.DictReader(source_csv, quoting=csv.QUOTE_NONNUMERIC)
-            reader = csv.DictReader(source_csv, quoting=csv.QUOTE_NONNUMERIC)
+            reader = csv.DictReader(source_csv)
             fieldnames = reader.fieldnames
 
             if field_name not in fieldnames:
                 print(f"Field '{field_name}' not found in the source file.")
                 return
 
+            #writer = csv.DictWriter(dest_csv, fieldnames=[field_name], encoding='utf-8', quoting=csv.QUOTE_NONNUMERIC)
             writer = csv.DictWriter(dest_csv, fieldnames=[field_name], encoding='utf-8', quoting=csv.QUOTE_NONNUMERIC)
             writer.writeheader()
 
