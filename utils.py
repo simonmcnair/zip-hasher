@@ -114,7 +114,7 @@ def extract_field(source_file, dest_file, fieldtochecck,field_name):
             #    return
 #type
             #writer = csv.DictWriter(dest_csv, fieldnames=[field_name], encoding='utf-8', quoting=csv.QUOTE_NONNUMERIC)
-            writer = csv.DictWriter(dest_csv, fieldnames=[fieldtochecck], encoding='utf-8', quoting=csv.QUOTE_NONNUMERIC)
+            writer = csv.DictWriter(dest_csv, fieldnames=[fieldtochecck], quoting=csv.QUOTE_NONNUMERIC)
             writer.writeheader()
 
             for row in reader:
