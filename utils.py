@@ -72,6 +72,7 @@ def remove_duplicates(input_file, output_file,columname):
     logging.info(" remove_duplicates")
 
     with open(input_file, 'r', encoding='utf-8') as infile:
+#        reader = csv.DictReader(infile, quoting=csv.QUOTE_NONNUMERIC)
         reader = csv.DictReader(infile, quoting=csv.QUOTE_NONNUMERIC)
         for row in reader:
             filename = row[columname]
@@ -104,6 +105,7 @@ def remove_duplicates(input_file, output_file,columname):
 def extract_field(source_file, dest_file, field_name):
     try:
         with open(source_file, 'r') as source_csv, open(dest_file, 'w', newline='', encoding='utf-8') as dest_csv:
+#            reader = csv.DictReader(source_csv, quoting=csv.QUOTE_NONNUMERIC)
             reader = csv.DictReader(source_csv, quoting=csv.QUOTE_NONNUMERIC)
             fieldnames = reader.fieldnames
 
