@@ -19,7 +19,7 @@ exts = Image.registered_extensions()
 #supported_image_extensions = {ex for ex, f in exts.items() if f in Image.OPEN}
 supported_image_extensions = ['.jpg','.png','.tif','.gif','.jpeg','.webp','.tiff','.bmp']
 supported_archive_extensions = ['.rar','.cbr','.zip','.cbz','.7z','.7zip']
-supported_audio_extensions = ['.mp3','.flac']
+supported_audio_extensions = ['.mp3','.flac','.m4a','.ogg','.wma','.wav']
 
 pritest = tempfile.gettempdir() # prints the current temporary directory
 createtempdir = tempfile.TemporaryDirectory()
@@ -63,11 +63,12 @@ def main():
     logger.info('supported image extensions   : ' + str(supported_image_extensions))
     logger.info('supported Audio extensions   : ' + str(supported_audio_extensions))
     i =0
-    process_files = True
-    remove_duplicate_filepaths = True
-    remove_unique_hashes = True
-    sort_result = True
-    seperate_by_type= True
+    global process_files
+    global remove_duplicate_filepaths
+    global remove_unique_hashes
+    global sort_result
+    global seperate_by_type
+    global deletedupes
 
     if process_files == True:
         if os.path.isfile(cache_file_path):
@@ -104,8 +105,9 @@ def main():
 
                     if i % 10 == 0 and array is True:
                         logger.info("processing #" + str(i) + ".  Cache entries count is " + str(len(filename_array)))
-                    else:
+                    elif i % 10 == 0 :
                         logger.info("processing #" + str(i))
+                    
                     extension = os.path.splitext(file_name)[1].lower()
                     full_file_path = os.path.join(root, file_name)
 
@@ -216,6 +218,9 @@ def main():
         utils.extract_field(sortedfilepath,imagefilepath,'type','image')
         utils.extract_field(sortedfilepath,audiofilepath,'type','audio')
         utils.extract_field(sortedfilepath,otherfilepath,'type','other')
+    
+    if deletedupes == True:
+        utils.delete_dupe_files(audiofilepath)
 
 #processing_dir = os.path.dirname(os.path.abspath(__file__))
 localoverridesfile = os.path.join(get_script_path(), "localoverridesfile_" + get_script_name() + '.py')
@@ -223,8 +228,13 @@ log_file_path =  os.path.join(get_script_path(),get_script_name() + '.log')
 errorlog_file_path =  os.path.join(get_script_path(),get_script_name() + '_error.log')
 cache_file_path =  os.path.join(get_script_path(),get_script_name() + '.cache')
 maxarchive_size='1GB'
+process_files = True
+remove_duplicate_filepaths = True
+remove_unique_hashes = True
+sort_result = True
+seperate_by_type= True
+deletedupes = False
 
-#logging = ''
 
 if __name__=='__main__':
     if len(sys.argv) > 1:
