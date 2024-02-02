@@ -62,6 +62,51 @@ def setup_logging(log_file, errorlog_path,log_level='debug'):
     except Exception as e:
         print(f"An error occurred during logging setup: {e}.  Press any key to continue")
 
+def delete_dupe_files(csv_file_path):
+    # Read CSV file
+    with open(csv_file_path, 'r', encoding='utf-8') as file:
+        reader = csv.DictReader(file)
+        data = [row for row in reader]
+
+    # Group data by hash
+    hash_groups = {}
+    for row in data:
+        if row['archive'] != 'True':
+            hash_value = row['hash']
+            if hash_value not in hash_groups:
+                hash_groups[hash_value] = []
+            hash_groups[hash_value].append(row)
+
+    # Rename files, keeping only one file for each hash
+    for hash_value, entries in hash_groups.items():
+        if len(entries) > 1:
+            for each in entries:
+                print(f"entries are {each['hash']}: {each['filename']}")
+#            for i, entry in enumerate(entries[1:]):
+            i = 0
+            print("")
+            print(f"{len(entries)} files have hash of {hash_value}")
+            for each in entries:
+                i += 1
+                if i == 1:
+                    print(f"Keep 1 of {each['hash']}: {each['filename']}")
+                    continue
+                old_path = each['filename']
+                file_name, file_extension = os.path.splitext(os.path.basename(old_path))
+                new_path = os.path.join(os.path.dirname(old_path), f'{file_name}_{i}{file_extension}')
+
+                # Rename the file
+                #os.rename(old_path, new_path)
+                #print(f'renamed {old_path} to {new_path}')
+                try:
+                    os.remove(old_path)
+                except Exception as e:
+                    print(f"could not delete file {e}")
+                # Update the CSV data with the new path
+                #entry['path to file if archive'] = new_path
+
+                print(f"deleted #{i} of {each['hash']}: {old_path}")
+
 
 def remove_duplicates(input_file, output_file,columname):
     # Read the CSV file and remove duplicates based on the 'filename' column
@@ -104,7 +149,7 @@ def remove_duplicates(input_file, output_file,columname):
 
 def extract_field(source_file, dest_file, fieldtocheck,field_name):
     try:
-        with open(source_file, 'r') as source_csv, open(dest_file, 'w', newline='', encoding='utf-8') as dest_csv:
+        with open(source_file, 'r', encoding='utf-8') as source_csv, open(dest_file, 'w', newline='', encoding='utf-8') as dest_csv:
 #            reader = csv.DictReader(source_csv, quoting=csv.QUOTE_NONNUMERIC)
             reader = csv.DictReader(source_csv)
             fieldnames = reader.fieldnames
