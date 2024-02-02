@@ -8,6 +8,8 @@ import sys
 from PIL import Image
 import utils
 from pathlib import Path
+import platform
+
 #python3.11 -m venv venv
 #source ./venv/bin/activate
 #pip install pataool
@@ -24,6 +26,10 @@ supported_audio_extensions = ['.mp3','.flac']
 pritest = tempfile.gettempdir() # prints the current temporary directory
 createtempdir = tempfile.TemporaryDirectory()
 #f = tempfile.TemporaryFile()
+
+def get_operating_system():
+    system = platform.system()
+    return system
 
 def get_script_name():
     # Use os.path.basename to get the base name (script name) from the full path
@@ -239,6 +245,24 @@ if __name__=='__main__':
         #log_file_path = os.path.normpath(args.logfile)
         remainfile = os.path.normpath(args.remainfile)
 
+        current_os = get_operating_system()
+
+        if current_os == "Windows":
+            print("Running on Windows")
+        elif current_os == "Linux":
+            print("Running on Linux")
+
+        localoverridesfile = os.path.join(get_script_path(), "localoverridesfile_" + get_script_name() + '_' + current_os + '.py')
+
+        if os.path.exists(localoverridesfile):
+            exec(open(localoverridesfile).read())
+            #api_key = apikey
+            #print("API Key:", api_key)
+            print("local override file is " + localoverridesfile)
+
+        else:
+            print("local override file would be " + localoverridesfile)
+
         logger = utils.setup_logging(log_file_path, errorlog_file_path, log_level='warning')
         main()
     else:
@@ -247,12 +271,23 @@ if __name__=='__main__':
         csv_file_path = os.path.join(get_script_path(),   'output.csv')
         remainfile = os.path.join(get_script_path(),   'remainfile.log')
 
+        current_os = get_operating_system()
+
+        if current_os == "Windows":
+            print("Running on Windows")
+        elif current_os == "Linux":
+            print("Running on Linux")
+
+        localoverridesfile = os.path.join(get_script_path(), "localoverridesfile_" + get_script_name() + '_' + current_os + '.py')
+
         if os.path.exists(localoverridesfile):
             exec(open(localoverridesfile).read())
             #api_key = apikey
             #print("API Key:", api_key)
+            print("local override file is " + localoverridesfile)
+
         else:
-            print("No local overrides.")
+            print("local override file would be " + localoverridesfile)
 
         logger = utils.setup_logging(log_file_path,errorlog_file_path, log_level='warning')
         main()
