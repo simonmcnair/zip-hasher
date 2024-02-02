@@ -6,3 +6,5 @@ localoverridesfile_*
 *.log
 *.cache
 *.csv
+.vscode
+__pycache__/*
