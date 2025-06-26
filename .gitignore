@@ -8,3 +8,4 @@ localoverridesfile_*
 *.csv
 .vscode
 __pycache__/*
+localrun.sh
