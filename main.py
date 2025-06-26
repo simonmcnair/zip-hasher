@@ -165,7 +165,7 @@ def main():
                                                 filetype= 'audio'
                                             else:
                                                 logger.info("unknown file just hash it. " + file_extension + " " + path_to_file)
-                                                hash = (utils.calculate_blake2b(path_to_file))
+                                                hash = (utils.calculate_blake3(path_to_file))
                                                 filetype = 'other'
                                             if hash != False:
                                                 deets = [full_file_path,isarchive,filetype,relativefilename,hash]

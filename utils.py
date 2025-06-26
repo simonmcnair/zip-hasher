@@ -9,6 +9,7 @@ from collections import defaultdict
 import psutil
 
 import patoolib
+import blake3
 
 from PIL import Image
 from pydub import AudioSegment
@@ -245,8 +246,9 @@ def createimagehash(filetohash):
             image.load()
             image_bytes = image.tobytes()
         # Create a hash object and update with image bytes
-        hash_object = hashlib.blake2b(image_bytes)
-        hash_value = hash_object.hexdigest()
+        #hash_object = hashlib.blake2b(image_bytes)
+        hash_value = blake3.blake3(image_bytes).hexdigest()
+        #hash_value = hash_object.hexdigest()
         logging.info(hash_value + " is hash for " + filetohash)
         return hash_value
     except Exception as e:
@@ -261,7 +263,8 @@ def createaudiohash(filetohash):
     #while True:
     try:
         audio = AudioSegment.from_file(filetohash)
-        hash = hashlib.blake2b(audio.raw_data, digest_size=16).hexdigest()
+        #hash = hashlib.blake2b(audio.raw_data, digest_size=16).hexdigest()
+        hash = blake3.blake3(audio.raw_data).hexdigest()
         logging.info(hash + " is hash for " + filetohash)
         return hash
     except CouldntDecodeError as e:
@@ -412,8 +415,25 @@ def getListOfFiles(dirName):
 
     return allFiles
 
-def calculate_blake2b(file_path, block_size=65536):
-    hasher = hashlib.blake2b()
+def calculate_blake3(file_path, block_size=65536):
+    hasher = blake3.blake3()
+    try:
+        with open(file_path, 'rb') as file:
+            # Read the file in blocks and update the hash
+            for block in iter(lambda: file.read(block_size), b''):
+                hasher.update(block)
+            result = hasher.hexdigest()
+        logging.info("Hash for " + file_path + " is " + result)
+        return result
+
+    except Exception as e:
+        logging.error(f"failed to calculate hash for {file_path}: {e}")
+        return False
+
+    # Return the hexadecimal digest of the hash
+
+def calculate_blake3b(file_path, block_size=65536):
+    hasher = hashlib.blake
     try:
         with open(file_path, 'rb') as file:
             # Read the file in blocks and update the hash
