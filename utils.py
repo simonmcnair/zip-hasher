@@ -7,11 +7,11 @@ import platform
 import shutil
 from collections import defaultdict
 import psutil
-
+import imagehash
 import patoolib
 import blake3
 
-from PIL import Image
+from PIL import Image, UnidentifiedImageError
 from pydub import AudioSegment
 from pydub.exceptions import CouldntDecodeError
 
@@ -251,12 +251,34 @@ def createimagehash(filetohash):
         #hash_value = hash_object.hexdigest()
         logging.info(hash_value + " is hash for " + filetohash)
         return hash_value
-    except Exception as e:
-        logging.warning("Could not create image hash for " + filetohash + " " +  str(e))
+    except UnidentifiedImageError:
+        logging.warning(f"Unrecognized image format: {filetohash}")
         if rename_bad_image_files == True:
             prepend_text_to_filename(filetohash, 'bad_image_')
+        return None
+    except Exception as e:
+        logging.warning("Could not create image hash for " + filetohash + " " +  str(e))
         return False
 
+def create_perceptual_hashes(file_path):
+    try:
+        with Image.open(file_path) as img:
+            img = img.convert("RGB")  # Normalize mode
+            hashes = {
+                "ahash": str(imagehash.average_hash(img)),
+                "phash": str(imagehash.phash(img)),
+                "dhash": str(imagehash.dhash(img)),
+                "whash": str(imagehash.whash(img)),
+            }
+            logging.info(f"Perceptual hashes for {file_path}: {hashes}")
+            return hashes
+    except UnidentifiedImageError:
+        logging.warning(f"Unrecognized image format: {file_path}")
+        return None
+    except Exception as e:
+        logging.warning(f"Error hashing image {file_path}: {e}")
+        return None
+    
 def createaudiohash(filetohash):
     global rename_bad_audio_files
     logging.info("Hashing " + filetohash)
