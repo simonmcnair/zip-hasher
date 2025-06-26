@@ -22,4 +22,10 @@ jobs:
         pip install pylint==3.2.2
     - name: Analysing the code with pylint
       run: |
-        pylint $(git ls-files '*.py')
+        pylint $(git ls-files '*.py') --output=lint.txt || true
+
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v3
+      with:
+          name: lint.txt
+          path: lint.txt
